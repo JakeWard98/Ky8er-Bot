@@ -13,4 +13,11 @@ bot.on('message', function(message){
     {
         message.reply("General Kenobi");
     }
+
+bot.on('message', function(message){
+    if(message.content == "Ping")
+    {
+        message.reply("Pong")
+    }
+})
 });
