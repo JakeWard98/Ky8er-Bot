@@ -11,8 +11,6 @@ Very Basic at this moment in time
 
     - When the user types "Ping", it will respond "Pong"
 
-        - Responds twice at the moment
-
 ----------------------------------
 
 Contributors
