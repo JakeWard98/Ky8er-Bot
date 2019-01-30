@@ -9,7 +9,7 @@ bot.on('ready', function(){
 })
 
 bot.on('message', function(message){
-    if(message.content == '!Hello There')
+    if(message.content == 'Hello There')
     {
         message.reply("General Kenobi");
     }
