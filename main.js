@@ -10,15 +10,18 @@ const token = 'NTQwMTAwMjg5NTIxMjU0NDEy.DzM60w.r6U6RCNxW2nNccWGNY7lrJCEqag'
 bot.login(token)
 
 bot.on('ready', function(){
+    //Shows that bot is ready for use and what has actually started
     console.log("\n> Started");
     console.log("> Erebus Bot is Ready too Use")
 })
 
 bot.on('message', function(message){
+    //test message
     if(message.content == 'Hello There')
     {
         message.reply("General Kenobi");
     }
+    //test message
     if(message.content == "Ping")
     {
         message.reply("Pong")
