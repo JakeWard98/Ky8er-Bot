@@ -4,17 +4,20 @@ const Discord = require('discord.js');
 const fs = require('fs');
 
 //initialize the discord bot
-const bot = new Discord.Client();
-const token = 'NTQwMTAwMjg5NTIxMjU0NDEy.DzM60w.r6U6RCNxW2nNccWGNY7lrJCEqag'
+const client = new Discord.Client();
+//gets the token of the bot
+const auth = require('./auth.json');
+// makes auth it accessible through client
+client.auth = auth;
 
 
-bot.on('ready', function(){
+client.on('ready', function(){
     //Shows that bot is ready for use and what has actually started
     console.log("\n> Started");
     console.log("> Ky8er Bot is Ready too Use\n")
 })
 
-bot.on('message', function(message){
+client.on('message', function(message){
     //test message
     if(message.content == 'Hello There')
     {
@@ -32,4 +35,5 @@ bot.on('message', function(message){
     }
 })
 
-bot.login(token);
+//logging the bot in
+client.login(auth.token);
