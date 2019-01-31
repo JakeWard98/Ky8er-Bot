@@ -1,6 +1,8 @@
 # Ky8er-Bot
 First Bot to to help practice programming
 
+Please be gentle
+
 # Current "Commands"
 
 Very Basic at this moment in time
