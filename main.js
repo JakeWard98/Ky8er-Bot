@@ -32,6 +32,4 @@ bot.on('message', function(message){
     }
 })
 
-bot.login(token)
-
-;
+bot.login(token);
