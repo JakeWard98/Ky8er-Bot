@@ -18,12 +18,17 @@ bot.on('message', function(message){
     //test message
     if(message.content == 'Hello There')
     {
-        message.channel.send("General Kenobi");
+        message.channel.send("General Kenobi!");
     }
     //test message
     if(message.content == "Ping")
     {
         message.channel.send("Pong")
+    }
+    //test message
+    if(message.content == "General Kenobi")
+    {
+        message.channel.send("YOU ARE A BOLD ONE")
     }
 })
 
