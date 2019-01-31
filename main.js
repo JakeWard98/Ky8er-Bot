@@ -12,7 +12,7 @@ bot.login(token)
 bot.on('ready', function(){
     //Shows that bot is ready for use and what has actually started
     console.log("\n> Started");
-    console.log("> Erebus Bot is Ready too Use")
+    console.log("> Erebus Bot is Ready too Use\n")
 })
 
 bot.on('message', function(message){
