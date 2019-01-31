@@ -1,7 +1,7 @@
-# Erebus-Bot
-A discord bot of Chaos
-
+# Ky8er-Bot
 First Bot to to help practice programming
+
+# Current "Commands"
 
 Very Basic at this moment in time
 
