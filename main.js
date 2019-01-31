@@ -7,7 +7,6 @@ const fs = require('fs');
 const bot = new Discord.Client();
 const token = 'NTQwMTAwMjg5NTIxMjU0NDEy.DzM60w.r6U6RCNxW2nNccWGNY7lrJCEqag'
 
-bot.login(token)
 
 bot.on('ready', function(){
     //Shows that bot is ready for use and what has actually started
@@ -26,4 +25,8 @@ bot.on('message', function(message){
     {
         message.reply("Pong")
     }
-});
+})
+
+bot.login(token)
+
+;
