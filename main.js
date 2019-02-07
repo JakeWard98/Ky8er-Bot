@@ -10,7 +10,6 @@ const auth = require('./auth.json');
 // makes auth it accessible through client
 client.auth = auth;
 
-
 client.on('ready', function(){
     //Shows that bot is ready for use and what has actually started
     console.log("\n> Started");
@@ -21,7 +20,7 @@ client.on('message', function(message){
     //test message
     if(message.content == 'Hello There')
     {
-        message.channel.send("General Kenobi!");
+        message.channel.send("General Kenobi");
     }
     //test message
     if(message.content == "Ping")
