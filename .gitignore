@@ -96,6 +96,7 @@ Thumbs.db
 
 #files
 auth.json
+prefix.json
 temp
 .eslintrc.json
 package-lock.json
