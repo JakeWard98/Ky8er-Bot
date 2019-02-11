@@ -7,13 +7,15 @@ const fs = require('fs');
 const client = new Discord.Client();
 //gets the token of the bot
 const auth = require('./auth.json');
+/*//gets the prefix for the bot
+const prefix = require('./prefix');*/
 // makes auth it accessible through client
 client.auth = auth;
 
 client.on('ready', function(){
     //Shows that bot is ready for use and what has actually started
     console.log("\n> Started");
-    console.log("> Ky8er Bot is Ready too Use\n")
+    console.log(`> ${client.user.username} is Online & Ready too Use\n`)
 })
 
 client.on('message', function(message){
