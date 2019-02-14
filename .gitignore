@@ -62,7 +62,7 @@ yarn-error.log*
 
 
 # Dependency directories
-node_modules/
+/node_modules/
 jspm_packages/
 
 # Optional npm cache directory
@@ -100,4 +100,4 @@ prefix.json
 temp
 .eslintrc.json
 package-lock.json
-/node_modules/
+#/node_modules/
