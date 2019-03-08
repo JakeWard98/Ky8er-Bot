@@ -10,5 +10,14 @@
   "license": "ISC",
   "dependencies": {
     "discord.js": "^11.4.2"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JakeWard98/Erebus-Bot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JakeWard98/Erebus-Bot/issues"
+  },
+  "homepage": "https://github.com/JakeWard98/Erebus-Bot#readme"
 }
