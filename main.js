@@ -6,11 +6,11 @@ const fs = require('fs');
 //initialize the discord bot
 const client = new Discord.Client();
 //gets the token of the bot
-const auth = require('./auth.json');
+const config = require('./config.json');
 /*//gets the prefix for the bot
 const prefix = require('./prefix');*/
-// makes auth it accessible through client
-client.auth = auth;
+// makes config it accessible through client
+client.config = config;
 
 client.on('ready', function(){
     //Shows that bot is ready for use and what has actually started
@@ -39,4 +39,4 @@ client.on('message', function(message){
 });
 
 //logging the bot in
-client.login(auth.token);
+client.login(config.token);
