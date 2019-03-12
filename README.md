@@ -11,15 +11,16 @@ Please be gentle
 ~~Very Basic at this moment in time~~
 Getting better and adding more "advanced" commands
 
-    - When the user types "^Hello There" it will respond with "General Kenobi"
+    - When the user types "^help" it will display a list of the current commands available
+    
+    - When the user types "^hello" it will respond with **[REDACTED]**
 
-    - When the user types "^Ping", it will respond with "Pong"
-
-    - When the user types "^General Kenobi", it will respond with "YOU ARE A BOLD ONE"
+    - When the user types "^Ping", it will display that the bot is online with an "Average heartbeat ping of the websocket"
 
     - When the user types "^server", it will display the name of the server
 
-    - When the user types "^Numbers" it will display the number of users in the server
+    - When the user types "^numbers" it will display the number of users in the server
+
 ----------------------------------
 
 Contributors
