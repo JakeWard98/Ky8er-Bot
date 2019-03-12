@@ -7,8 +7,6 @@ const fs = require('fs');
 const client = new Discord.Client();
 //gets the token of the bot
 const { prefix, token } = require('./config.json');
-/*//gets the prefix for the bot
-const prefix = require('./prefix');*/
 // makes config it accessible through client
 //client.config = config;
 
@@ -16,7 +14,7 @@ client.once('ready', () => {
     //Shows that bot is ready for use and what has actually started
     console.log("\n> Started");
     console.log(`> ${client.user.username} is Online & Ready too Use`);
-    client.user.setActivity('^help');
+    client.user.setActivity('Prefix ^');
     console.log("> Activity Has Been Set\n");
 });
 
