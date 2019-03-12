@@ -39,7 +39,8 @@ client.once('ready', () => {
 //feel free to look and tell me what's from and fix, if you want
 client.on('message', message => {
     if (message.content === `${prefix}ping`){
-        message.channel.send(`${client.user.username} is Online & Ready too Use`);
+        //States that the bot is online with an "Average heartbeat ping of the websocket"
+        message.channel.send(`${client.user.username} is Online & Ready To Use @ ` + `${client.ping} ms`);
     }
 })
 
