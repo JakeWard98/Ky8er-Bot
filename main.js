@@ -6,11 +6,11 @@ const fs = require('fs');
 //initialize the discord bot
 const client = new Discord.Client();
 //gets the token of the bot
-const config = require('./config.json');
+const { prefix, token } = require('./config.json');
 /*//gets the prefix for the bot
 const prefix = require('./prefix');*/
 // makes config it accessible through client
-client.config = config;
+//client.config = config;
 
 client.on('ready', function(){
     //Shows that bot is ready for use and what has actually started
@@ -22,21 +22,26 @@ client.on('ready', function(){
 
 client.on('message', function(message){
     //test message
-    if(message.content == 'Hello There')
-    {
+    if(message.content === `${prefix}Hello There`){
         message.channel.send("General Kenobi");
     }
     //test message
-    if(message.content == "Ping")
-    {
+    else if(message.content == "^Ping"){
         message.channel.send("Pong");
     }
     //test message
-    if(message.content == "General Kenobi")
-    {
+    else if(message.content == "^General Kenobi"){
         message.channel.send("YOU ARE A BOLD ONE");
+    }
+    //"Advanced" Message
+    else if (message.content === `${prefix}server`){
+        message.channel.send(`The server is: ${message.guild.name}`);
+    }
+    //"Advanced" Message
+    else if (message.content === `${prefix}Numbers`){
+        message.channel.send(`This Server has **${message.guild.memberCount}** Total Members` );
     }
 });
 
 //logging the bot in
-client.login(config.token);
+client.login(token);
