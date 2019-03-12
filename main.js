@@ -14,7 +14,7 @@ client.once('ready', () => {
     //Shows that bot is ready for use and what has actually started
     console.log("\n> Started");
     console.log(`> ${client.user.username} is Online & Ready too Use`);
-    client.user.setActivity('Prefix ^');
+    client.user.setActivity('Prefix: ^');
     console.log("> Activity Has Been Set\n");
 });
 
