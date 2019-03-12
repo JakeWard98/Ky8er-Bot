@@ -12,7 +12,7 @@ const prefix = require('./prefix');*/
 // makes config it accessible through client
 //client.config = config;
 
-client.on('ready', function(){
+client.once('ready', () => {
     //Shows that bot is ready for use and what has actually started
     console.log("\n> Started");
     console.log(`> ${client.user.username} is Online & Ready too Use`);
