@@ -20,7 +20,7 @@ client.once('ready', () => {
     console.log("> Activity Has Been Set\n");
 });
 
-client.on('message', function(message){
+client.on('message', message => {
     //test message
     if(message.content === `${prefix}Hello There`){
         message.channel.send("General Kenobi");
