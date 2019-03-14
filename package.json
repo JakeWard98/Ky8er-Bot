@@ -4,12 +4,15 @@
   "description": "First Bot",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ."
   },
   "author": "Ky8er",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^11.4.2"
+    "discord.js": "^11.4.2",
+    "ffmpeg": "0.0.4",
+    "when": "^3.7.8"
   },
   "devDependencies": {},
   "repository": {
