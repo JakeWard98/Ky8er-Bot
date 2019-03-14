@@ -1,10 +1,10 @@
 # Ky8er-Bot
+
 First Bot to to help practice programming
 
 Please be gentle
 
 # Prefix: ^
-
 
 # Current "Commands"
 
