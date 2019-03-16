@@ -10,7 +10,8 @@
   "author": "Ky8er",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^11.4.2"
+    "discord.js": "^11.4.2",
+    "discord.js-commando": "^0.10.0"
   },
   "devDependencies": {},
   "repository": {

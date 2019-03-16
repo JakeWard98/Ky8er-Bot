@@ -1,5 +1,5 @@
 //imports discord.js
-const Discord = require('discord.js');
+const Discord = require('discord.js-commando');
 //imports file system from node.js
 const fs = require('fs');
 
