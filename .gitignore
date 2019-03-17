@@ -99,3 +99,4 @@ config.json
 temp
 .eslintrc.json
 settings.sqlite3
+obsolote_code.js

@@ -10,7 +10,9 @@ Please be gentle
 
 Getting better and adding more "advanced" commands
 
-    - When the user types "^help" it will display a list of the current commands available
+    - When the user types "^help" it will display a list of commands that, eventually,<br/> only normal users can use
+
+    - When the user types "^modhelp" it will display a list of commands that, eventually,<br/> only mods can use
     
     - When the user types "^hello" it will respond with **[REDACTED]**
 
