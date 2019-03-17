@@ -4,9 +4,9 @@ First Bot to to help practice programming
 
 Please be gentle
 
-# Prefix: ^
+## Prefix: ^
 
-# Current "Commands"
+## Current "Commands"
 
 ~~Very Basic at this moment in time~~
 Getting better and adding more "advanced" commands
