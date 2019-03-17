@@ -98,3 +98,4 @@ Thumbs.db
 config.json
 temp
 .eslintrc.json
+settings.sqlite3
