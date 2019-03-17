@@ -1,7 +1,18 @@
-module.exports = {
-	name: 'server',
-	description: 'Server Name',
-	execute(message, args) {
-		message.channel.send(`The server is: ${message.guild.name}`);
-	},
-};
+const Discord = require('discord.js-commando');
+
+class ServerName extends Discord.Command{
+	constructor(client){
+		super(client,{
+			name: 'server',
+			group: 'user',
+			memberName: 'server',
+			description: 'Shows Server Name'
+		});
+	}
+
+	async run (message, args){
+		message.channel.send(`This server is: ${message.guild.name}`);
+	}
+}
+
+module.exports = ServerName;
