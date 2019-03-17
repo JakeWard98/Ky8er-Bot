@@ -5,7 +5,9 @@ const fs = require('fs');
 
 //initialize the discord bot
 const client = new Discord.Client();
-client.commands = new Discord.Collection();
+client.registry.registerGroup('user', 'mod');
+client.registry.registerDefault();
+client.registry.registerCommandIn(__dirname + "/commands");
 
 //Returns and array of file names and checks to see if they are .js files.
 //If they are not a .js file then it will be rejected from the array
