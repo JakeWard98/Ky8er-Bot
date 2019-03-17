@@ -8,7 +8,6 @@ Please be gentle
 
 ## Current "Commands"
 
-~~Very Basic at this moment in time~~
 Getting better and adding more "advanced" commands
 
     - When the user types "^help" it will display a list of the current commands available
