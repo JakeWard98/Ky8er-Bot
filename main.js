@@ -24,6 +24,7 @@ client.registry
         .registerGroups([
             ['user', 'basic commands'],
             ['mod', 'commands for mods'],
+            ['voice', 'used to voice channels']
         ])
         // .registerDefaults()
         // ANYWAY TO DISABLE DEFAULT COMMANDS? DOING ": false" doesn't work
