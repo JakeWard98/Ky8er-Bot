@@ -16,11 +16,15 @@ Getting better and adding more "advanced" commands
 
     - When the user types "^hello" it will respond with **[REDACTED]**
 
-    - When the user types "^Ping", it will display that the bot is online with an "Average heartbeat ping of the websocket"
+    - When the user types "^ping", it will display that the bot is online with an "Average heartbeat ping of the websocket"
 
     - When the user types "^server", it will display the name of the server
 
     - When the user types "^numbers" it will display the number of users in the server
+
+    - When the user types "^join" the bot will join the voice channel they are in
+
+    - When the user types "^dc" the bot will leave, even when the user isn't in a voice channel [Will Fix]
 
 ## Plans
 
