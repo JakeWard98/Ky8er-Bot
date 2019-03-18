@@ -20,6 +20,8 @@ class Help extends Discord.Command{
 			.addField('help', 'Calls this Dialogue box')
 			.addField('hello', 'Greets the User')
 			.addField('server', 'Shows the Server Name')
+			.addField('join','The Bot joins your Voice Channel')
+			.addField('dc','The Bot leaves the Voice Channel')
 			.setTimestamp()
 			.setFooter('Bot Still in Development')	
 		message.channel.send(helpEmbed);
