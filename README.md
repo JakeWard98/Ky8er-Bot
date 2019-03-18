@@ -28,8 +28,6 @@ Getting better and adding more "advanced" commands
 
 ## Plans
 
-    - Allow connection to Voice Channels
-
     - Play Music from YouTube/other Music Sources
 
     - Have only 1 help command that checks to see what permissions the user has and then displays the correct one
