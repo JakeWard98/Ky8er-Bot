@@ -23,6 +23,7 @@ class Help extends Discord.Command{
 			.addField('server', 'Shows the Server Name')
 			.addField('join','The Bot joins your Voice Channel')
 			.addField('dc','The Bot leaves the Voice Channel')
+			.addField('play + YT URL', 'The Bot Plays the Song and Disconnects [No Queue System atm]')
             .addField('numbers', 'Shows Total Members')
             .addField('ping', 'Pings the bot and show the average "Heartbeat" (Can be very temperamental)')
             .setTimestamp()

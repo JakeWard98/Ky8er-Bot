@@ -22,6 +22,7 @@ class Help extends Discord.Command{
 			.addField('server', 'Shows the Server Name')
 			.addField('join','The Bot joins your Voice Channel')
 			.addField('dc','The Bot leaves the Voice Channel')
+			.addField('play + YT URL', 'The Bot Plays the Song and Disconnects [No Queue System atm]')
 			.setTimestamp()
 			.setFooter('Bot Still in Development')	
 		message.channel.send(helpEmbed);
