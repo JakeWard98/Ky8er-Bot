@@ -15,7 +15,7 @@ class Join extends Discord.Command{
 			if(!message.guild.voiceConnection){
 				message.member.voiceChannel.join()
 				.then(connection =>{
-					message.reply('Successfully Joined!')
+					message.reply('Successfully Joined!');
 				})
 			}
 		} else{
