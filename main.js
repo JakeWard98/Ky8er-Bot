@@ -30,6 +30,8 @@ client.registry
         // ANYWAY TO DISABLE DEFAULT COMMANDS? DOING ": false" doesn't work
         .registerCommandsIn(path.join(__dirname + "/commands"));
 
+global.servers = {};
+
 //Returns and array of file names and checks to see if they are .js files.
 //If they are not a .js file then it will be rejected from the array
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
