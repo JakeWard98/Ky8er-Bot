@@ -31,7 +31,10 @@ Getting better and adding more "advanced" commands
 ## Plans
 
     - Play Music from YouTube/other Music Sources
-        - Done, just need to allow a Queue and Media Options
+        - To do:
+            - Allow a Queue
+            - Media Options
+            - Embedded Messages
 
     - Have only 1 help command that checks to see what permissions the user has and then displays the correct one
 
