@@ -1,9 +1,10 @@
-const Discord = require('discord.js-commando');
-const client = new Discord.Client()
+const Commando = require('discord.js-commando');
+const Discord = require('discord.js');
+const client = new Commando.Client();
 
 const { token } = require('../../config.json');
 
-class ServerName extends Discord.Command{
+class ServerName extends Commando.Command{
 	constructor(client){
 		super(client,{
 			name: 'ping',
