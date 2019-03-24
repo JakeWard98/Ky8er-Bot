@@ -4,7 +4,7 @@ const client = new Commando.Client();
 
 const { token } = require('../../config.json');
 
-class ServerName extends Commando.Command{
+class Ping extends Commando.Command{
 	constructor(client){
 		super(client,{
 			name: 'ping',
