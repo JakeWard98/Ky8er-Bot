@@ -1,6 +1,9 @@
-const Commando = require('discord.js-commando');
+//Weird Fix, May be completely wrong, fix need be
 
-const client = new Commando.Client();
+const Commando = require('discord.js-commando');
+const Discord = require('discord.js');
+
+const client = new Discord.Client();
 
 const { token } = require('../../config.json');
 
