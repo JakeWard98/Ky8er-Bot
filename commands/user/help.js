@@ -15,7 +15,7 @@ class Help extends Discord.Command{
 		// message.channel.send('For help use ^help\nThese are the current commands:```\n^help\n^ping\n^hello\n^server\n^numbers```');
 		var helpEmbed = new embed.RichEmbed()
 			.setColor('#F810EB')
-			.setTitle('Help')
+			.setTitle('__***Help***__')
 			.addField('Prefix', 'The Prefix is ^')
 			.addField('help', 'Calls this Dialogue box')
 			.addField('hello', 'Greets the User')
