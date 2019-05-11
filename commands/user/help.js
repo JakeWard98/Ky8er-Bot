@@ -12,7 +12,6 @@ class Help extends Discord.Command{
 	}
 
 	async run (message, args){
-		// message.channel.send('For help use ^help\nThese are the current commands:```\n^help\n^ping\n^hello\n^server\n^numbers```');
 		var helpEmbed = new embed.RichEmbed()
 			.setColor('#F810EB')
 			.setTitle('__***Help***__')
@@ -20,6 +19,8 @@ class Help extends Discord.Command{
 			.addField('help', 'Calls this Dialogue box')
 			.addField('hello', 'Greets the User')
 			.addField('server', 'Shows the Server Name')
+			.addField('id', 'The bot displays the users Discord ID')
+			.addField('name', 'The bot displays the users global Discord Name & Tag')
 			.addField('join','The Bot joins your Voice Channel')
 			.addField('dc','The Bot leaves the Voice Channel')
 			.addField('play + YT URL', 'The Bot Plays the Song and Disconnects [No Queue System atm]')

@@ -22,6 +22,10 @@ Getting better and adding more "advanced" commands
 
     - ^numbers - bot will display the number of users in the server
 
+    - ^id - bot displays the user's Discord ID
+
+    - ^name - bot displays the user's global Discord Name & Tag
+
     - ^join - bot will join the voice channel they are in
 
     - ^dc - bot will leave, even when the user isn't in a voice channel [Will Fix]
