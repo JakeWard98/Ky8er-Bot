@@ -12,14 +12,15 @@
   "dependencies": {
     "discord.js": "^11.4.2",
     "discord.js-commando": "^0.10.0",
-    "ffmpeg": "0.0.4",
+    "ffmpeg": "^0.0.4",
     "ffmpeg-binaries": "^4.0.0",
     "node-opus": "^0.3.1",
-    "opusscript": "0.0.6",
     "sqlite": "^3.0.2",
     "ytdl-core": "^0.29.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "hoek": "^6.1.2"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JakeWard98/Erebus-Bot.git"
