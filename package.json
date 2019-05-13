@@ -10,12 +10,12 @@
   "author": "Ky8er",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^11.4.2",
+    "discord.js": "^11.5.0",
     "discord.js-commando": "^0.10.0",
     "ffmpeg": "^0.0.4",
     "ffmpeg-binaries": "^4.0.0",
     "node-opus": "^0.3.1",
-    "sqlite": "^3.0.2",
+    "sqlite": "^3.0.3",
     "ytdl-core": "^0.29.1"
   },
   "devDependencies": {
@@ -23,11 +23,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JakeWard98/Erebus-Bot.git"
+    "url": "git+https://github.com/JakeWard98/Ky8er-Bot.git"
   },
   "bugs": {
-    "url": "https://github.com/JakeWard98/Erebus-Bot/issues"
+    "url": "https://github.com/JakeWard98/Ky8er-Botissues"
   },
-  "homepage": "https://github.com/JakeWard98/Erebus-Bot#readme",
+  "homepage": "https://github.com/JakeWard98/Ky8er-Bot#readme",
   "keywords": []
 }
