@@ -1,22 +1,20 @@
-const Discord = require('discord.js-commando');
+const { getVoiceConnection } = require('@discordjs/voice');
 
-class Leave extends Discord.Command{
-	constructor(client){
-		super(client,{
-			name: 'dc',
-			group: 'voice',
-			memberName: 'leave',
-			description: 'Bot leaves channel'
-		});
-	}
+class Leave {
+    constructor() {
+        this.name = 'dc';
+        this.description = 'Bot leaves channel';
+    }
 
-	async run (message, args){
-		if(message.guild.voiceConnection){
-			message.guild.voiceConnection.disconnect();
-		} else{
-			message.reply('I need to be Chatting to be Disconnected!');
-		}
-	}
+    async execute(message, args, servers) {
+        const connection = getVoiceConnection(message.guild.id);
+        if (!connection) {
+            return message.reply('I need to be in a Voice Channel to be Disconnected!');
+        }
+        connection.destroy();
+        delete servers[message.guild.id];
+        message.reply('Disconnected!');
+    }
 }
 
 module.exports = Leave;

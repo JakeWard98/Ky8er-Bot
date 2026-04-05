@@ -1,18 +1,12 @@
-const Discord = require('discord.js-commando');
+class User {
+    constructor() {
+        this.name = 'name';
+        this.description = 'Shows Users Name & Tag';
+    }
 
-class User extends Discord.Command{
-	constructor(client){
-		super(client,{
-			name: 'name',
-			group: 'user',
-			memberName: 'name',
-			description: 'Shows Users Name'
-		});
-	}
-
-	async run (message, args){
-		message.channel.send(`Your Username & Tag is: ${message.member.user.tag}`);
-	}
+    async execute(message, args, servers) {
+        message.channel.send(`Your Username & Tag is: ${message.author.tag}`);
+    }
 }
 
 module.exports = User;

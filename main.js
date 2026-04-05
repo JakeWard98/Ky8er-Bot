@@ -1,52 +1,56 @@
-//imports discord.js-commando
-const Commando = require('discord.js-commando');
-
-const path = require('path');
-
-//imports file system from node.js
+require('dotenv').config();
+const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const fs = require('fs');
 
-//imports sqlite settings manager
-// const sqlite = require('sqlite');
-
-//initialize the discord bot and set the prefix for commando
-const client = new Commando.Client({
-    commandPrefix : '^',
-    owner: '134335701448654849',
-    disableEveryone: true
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildVoiceStates,
+    ],
 });
 
-// client.setProvider(sqlite.open(path.join(__dirname, 'settings.sqlite3'))
-//                     .then(db => Commando.SQLiteProvider(db))
-//                     ).catch(console.error);
+client.commands = new Collection();
+const prefix = '^';
+const servers = {};
 
-client.registry
-        .registerGroups([
-            ['user', 'basic commands'],
-            ['mod', 'commands for mods'],
-            ['voice', 'used to voice channels']
-        ])
-        // .registerDefaults()
-        // ANYWAY TO DISABLE DEFAULT COMMANDS? DOING ": false" doesn't work
-        .registerCommandsIn(path.join(__dirname + "/commands"));
-
-global.servers = {};
-
-//Returns and array of file names and checks to see if they are .js files.
-//If they are not a .js file then it will be rejected from the array
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-
-//gets the token of the bot
-const { token } = require('./config.json');
-// Prefix no longer needs to be called from the config
+// Load commands from subdirectories
+for (const dir of fs.readdirSync('./commands')) {
+    const dirPath = `./commands/${dir}`;
+    if (!fs.statSync(dirPath).isDirectory()) continue;
+    for (const file of fs.readdirSync(dirPath).filter(f => f.endsWith('.js'))) {
+        const Cmd = require(`${dirPath}/${file}`);
+        const cmd = new Cmd();
+        if (cmd.name) client.commands.set(cmd.name, cmd);
+    }
+}
 
 client.once('ready', () => {
-    //Shows that bot is ready for use and what has actually started
-    console.log("\n> Started");
-    console.log(`> ${client.user.username} is Online & Ready too Use`);
+    console.log('Bot ready.');
     client.user.setActivity('^help');
-    console.log("> Activity Has Been Set\n");
 });
 
-//logging the bot in
-client.login(token);
+client.on('messageCreate', async (message) => {
+    if (!message.content.startsWith(prefix) || message.author.bot) return;
+    const args = message.content.slice(prefix.length).trim().split(/ +/);
+    const name = args.shift().toLowerCase();
+    const command = client.commands.get(name);
+    if (!command) return;
+    try {
+        await command.execute(message, args, servers);
+    } catch (err) {
+        console.error(`Command error [${name}]:`, err.message);
+        message.reply('There was an error executing that command.').catch(() => {});
+    }
+});
+
+client.on('guildDelete', (guild) => {
+    delete servers[guild.id];
+});
+
+process.on('unhandledRejection', (err) => {
+    console.error('Unhandled rejection:', err.message);
+});
+
+client.login(process.env.TOKEN);

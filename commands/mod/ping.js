@@ -1,18 +1,17 @@
-const Commando = require('discord.js-commando');
+const { PermissionFlagsBits } = require('discord.js');
 
-class Ping extends Commando.Command{
-	constructor(client){
-		super(client,{
-			name: 'ping',
-			group: 'mod',
-			memberName: 'ping',
-			description: 'Shows Server ping'
-		});
-	}
+class Ping {
+    constructor() {
+        this.name = 'ping';
+        this.description = 'Shows Server ping';
+    }
 
-	async run (message, args){
-		message.channel.send(`${this.client.user.username} is Online & Ready To Use @ ` + `${this.client.ping} ms`);
-	}
+    async execute(message, args, servers) {
+        if (!message.member.permissions.has(PermissionFlagsBits.ManageMessages)) {
+            return message.reply('You do not have permission to use this command.');
+        }
+        message.channel.send(`${message.client.user.username} is Online & Ready To Use @ ${message.client.ws.ping} ms`);
+    }
 }
 
 module.exports = Ping;

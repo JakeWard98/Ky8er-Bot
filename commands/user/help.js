@@ -1,33 +1,30 @@
-const Discord = require('discord.js-commando');
-const embed = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
-class Help extends Discord.Command{
-	constructor(client){
-		super(client,{
-			name: 'help',
-			group: 'user',
-			memberName: 'help',
-			description: 'Help command to show commands'
-		});
-	}
+class HelpCommand {
+    constructor() {
+        this.name = 'help';
+        this.description = 'Calls this Help dialogue box';
+    }
 
-	async run (message, args){
-		var helpEmbed = new embed.RichEmbed()
-			.setColor('#F810EB')
-			.setTitle('__***Help***__')
-			.addField('Prefix', 'The Prefix is ^')
-			.addField('help', 'Calls this Dialogue box')
-			.addField('hello', 'Greets the User')
-			.addField('server', 'Shows the Server Name')
-			.addField('id', 'The bot displays the users Discord ID')
-			.addField('name', 'The bot displays the users global Discord Name & Tag')
-			.addField('join','The Bot joins your Voice Channel')
-			.addField('dc','The Bot leaves the Voice Channel')
-			.addField('play + YT URL', 'The Bot Plays the Song and Disconnects [No Queue System atm]')
-			.setTimestamp()
-			.setFooter('Bot Still in Development')	
-		message.channel.send(helpEmbed);
-	}
+    async execute(message, args, servers) {
+        const helpEmbed = new EmbedBuilder()
+            .setColor('#F810EB')
+            .setTitle('__***Help***__')
+            .addFields(
+                { name: 'Prefix', value: 'The Prefix is ^' },
+                { name: 'help', value: 'Calls this dialogue box' },
+                { name: 'hello', value: 'Greets the User' },
+                { name: 'server', value: 'Shows the Server Name' },
+                { name: 'id', value: 'The bot displays the users Discord ID' },
+                { name: 'name', value: 'The bot displays the users global Discord Name & Tag' },
+                { name: 'join', value: 'The Bot joins your Voice Channel' },
+                { name: 'dc', value: 'The Bot leaves the Voice Channel' },
+                { name: 'play + YT URL', value: 'The Bot Plays the Song [No Queue System atm]' }
+            )
+            .setTimestamp()
+            .setFooter({ text: 'Bot Still in Development' });
+        message.channel.send({ embeds: [helpEmbed] });
+    }
 }
 
-module.exports = Help;
+module.exports = HelpCommand;

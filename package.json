@@ -10,12 +10,11 @@
   "author": "Ky8er",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^11.5.0",
-    "discord.js-commando": "^0.10.0",
-    "ffmpeg": "^0.0.4",
-    "node-opus": "^0.3.1",
-    "sqlite": "^3.0.3",
-    "ytdl-core": "^0.29.1"
+    "@discordjs/voice": "^0.18.0",
+    "opusscript": "^0.1.1",
+    "discord.js": "^14.16.3",
+    "dotenv": "^16.4.5",
+    "ytdl-core": "^4.11.5"
   },
   "devDependencies": {},
   "repository": {
