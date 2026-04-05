@@ -1,49 +1,84 @@
 # Ky8er-Bot
 
-First Bot to to help practice programming
+A Discord bot built with discord.js v14.
 
-Please be gentle
+## Setup
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) v18 or higher
+- A Discord bot token from the [Discord Developer Portal](https://discord.com/developers/applications)
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/JakeWard98/Ky8er-Bot.git
+cd Ky8er-Bot
+
+# Run the setup script
+chmod +x setup.sh
+./setup.sh
+```
+
+Or manually:
+
+```bash
+npm install
+cp .env.example .env
+# Edit .env and add your bot token
+```
+
+### Configuration
+
+1. Copy `.env.example` to `.env` and add your bot token:
+   ```
+   TOKEN=your_discord_bot_token_here
+   ```
+2. In the [Discord Developer Portal](https://discord.com/developers/applications), go to your application > Bot > Privileged Gateway Intents and enable **Message Content Intent**.
+
+### Running
+
+```bash
+npm start
+```
 
 ## Prefix: ^
 
-## Current "Commands"
+## Commands
 
-Getting better and adding more "advanced" commands
+### User Commands
 
-    - ^help -  bot will display a list of commands that, eventually, only normal users can use
+| Command | Description |
+|---------|-------------|
+| `^help` | Displays a list of user commands |
+| `^hello` | Greets the user |
+| `^server` | Shows the server name |
+| `^id` | Displays the user's Discord ID |
+| `^name` | Displays the user's Discord Name & Tag |
 
-    - ^modhelp - bot will display a list of commands that, eventually, only mods can use
+### Mod Commands (requires Manage Messages permission)
 
-    - ^hello - bot will respond with **[REDACTED]**
+| Command | Description |
+|---------|-------------|
+| `^modhelp` | Displays a list of all commands (mod view) |
+| `^ping` | Shows the bot's websocket heartbeat ping |
+| `^numbers` | Shows the total number of members in the server |
 
-    - ^ping - bot will display that the bot is online with an "Average heartbeat ping of the websocket"
+### Voice Commands
 
-    - ^server - bot will display the name of the server
-
-    - ^numbers - bot will display the number of users in the server
-
-    - ^id - bot displays the user's Discord ID
-
-    - ^name - bot displays the user's global Discord Name & Tag
-
-    - ^join - bot will join the voice channel they are in
-
-    - ^dc - bot will leave, even when the user isn't in a voice channel [Will Fix]
-
-    - ^play + YouTube URL - bot will play given URL [ONLY 1 SONG AT A TIME]
+| Command | Description |
+|---------|-------------|
+| `^join` | Bot joins your voice channel |
+| `^dc` | Bot disconnects from voice |
+| `^play <YouTube URL>` | Plays audio from a YouTube URL |
 
 ## Plans
 
-    - Play Music from YouTube/other Music Sources
-        - To do:
-            - Allow a Queue
-            - Media Options
-            - Embedded Messages
+- Queue system for music playback
+- Pause, skip, and now-playing commands
+- Single help command that adapts based on user permissions
 
-    - Have only 1 help command that checks to see what permissions the user has and then displays the correct one
+---
 
-----------------------------------
-
-Contributors
-
-Jake Ward
+Contributors: Jake Ward
