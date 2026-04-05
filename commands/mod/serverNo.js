@@ -1,18 +1,17 @@
-const Discord = require('discord.js-commando');
+const { PermissionFlagsBits } = require('discord.js');
 
-class ServerNo extends Discord.Command{
-	constructor(client){
-		super(client,{
-			name: 'numbers',
-			group: 'mod',
-			memberName: 'numbers',
-			description: 'Shows Server Numbers'
-		});
-	}
+class ServerNo {
+    constructor() {
+        this.name = 'numbers';
+        this.description = 'Shows Server Numbers';
+    }
 
-	async run (message, args){
-		message.channel.send(`This Server has **${message.guild.memberCount}** Total Members`);
-	}
+    async execute(message, args, servers) {
+        if (!message.member.permissions.has(PermissionFlagsBits.ManageMessages)) {
+            return message.reply('You do not have permission to use this command.');
+        }
+        message.channel.send(`This Server has **${message.guild.memberCount}** Total Members`);
+    }
 }
 
 module.exports = ServerNo;
