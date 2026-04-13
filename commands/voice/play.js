@@ -6,7 +6,7 @@ const {
     AudioPlayerStatus,
     VoiceConnectionStatus,
 } = require('@discordjs/voice');
-const ytdl = require('ytdl-core');
+const ytdl = require('@distube/ytdl-core');
 
 const ytUrlPattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/;
 

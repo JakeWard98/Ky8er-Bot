@@ -9,12 +9,15 @@
   },
   "author": "Ky8er",
   "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "@discordjs/voice": "^0.18.0",
     "opusscript": "^0.1.1",
     "discord.js": "^14.16.3",
     "dotenv": "^16.4.5",
-    "ytdl-core": "^4.11.5"
+    "@distube/ytdl-core": "^4.16.10"
   },
   "devDependencies": {},
   "repository": {
@@ -22,7 +25,7 @@
     "url": "git+https://github.com/JakeWard98/Ky8er-Bot.git"
   },
   "bugs": {
-    "url": "https://github.com/JakeWard98/Ky8er-Botissues"
+    "url": "https://github.com/JakeWard98/Ky8er-Bot/issues"
   },
   "homepage": "https://github.com/JakeWard98/Ky8er-Bot#readme",
   "keywords": []
