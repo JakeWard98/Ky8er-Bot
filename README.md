@@ -1,49 +1,100 @@
 # Ky8er-Bot
 
-First Bot to to help practice programming
+A small Discord bot used as a sandbox for learning. Be gentle — this is
+practice code.
 
-Please be gentle
+## Requirements
 
-## Prefix: ^
+- Node.js **>= 18**
+- A Discord bot token (see
+  [Discord Developer Portal](https://discord.com/developers/applications))
+- **Message Content Intent** enabled under *Bot > Privileged Gateway Intents*
 
-## Current "Commands"
+## Install
 
-Getting better and adding more "advanced" commands
+```bash
+./setup.sh
+```
 
-    - ^help -  bot will display a list of commands that, eventually, only normal users can use
+`setup.sh` checks your Node.js version, runs `npm install`, copies
+`.env.example` → `.env` on first run, and runs `npm audit`.
 
-    - ^modhelp - bot will display a list of commands that, eventually, only mods can use
+Then edit `.env` and set your bot token:
 
-    - ^hello - bot will respond with **[REDACTED]**
+```env
+TOKEN=your_discord_bot_token_here
+```
 
-    - ^ping - bot will display that the bot is online with an "Average heartbeat ping of the websocket"
+## Run
 
-    - ^server - bot will display the name of the server
+```bash
+npm start
+```
 
-    - ^numbers - bot will display the number of users in the server
+## Prefix: `^`
 
-    - ^id - bot displays the user's Discord ID
+## Commands
 
-    - ^name - bot displays the user's global Discord Name & Tag
+### User
 
-    - ^join - bot will join the voice channel they are in
+| Command              | Description                                          |
+|----------------------|------------------------------------------------------|
+| `^help`              | List user commands                                   |
+| `^hello`             | Bot replies with a greeting                          |
+| `^server`            | Show the server name                                 |
+| `^numbers`           | Show the number of users in the server               |
+| `^id`                | Show the caller's Discord ID                         |
+| `^name`              | Show the caller's global Discord name and tag        |
 
-    - ^dc - bot will leave, even when the user isn't in a voice channel [Will Fix]
+### Mod
 
-    - ^play + YouTube URL - bot will play given URL [ONLY 1 SONG AT A TIME]
+| Command              | Description                                          |
+|----------------------|------------------------------------------------------|
+| `^modhelp`           | List mod commands                                    |
+| `^ping`              | Show the bot's websocket heartbeat ping              |
+| `^serverno` / alias  | Show the server's internal number                    |
 
-## Plans
+### Voice
 
-    - Play Music from YouTube/other Music Sources
-        - To do:
-            - Allow a Queue
-            - Media Options
-            - Embedded Messages
+| Command              | Description                                          |
+|----------------------|------------------------------------------------------|
+| `^join`              | Bot joins the caller's voice channel                 |
+| `^dc` / `^leave`     | Bot leaves the voice channel                         |
+| `^play <url>`        | Queue or play a YouTube URL                          |
+| `^queue`             | Show the queue                                       |
+| `^skip`              | Skip the current track                               |
+| `^pause`             | Pause playback                                       |
+| `^np`                | Show the now-playing track                           |
 
-    - Have only 1 help command that checks to see what permissions the user has and then displays the correct one
+## Dependencies
 
-----------------------------------
+Direct runtime deps (kept minimal):
 
-Contributors
+- [`discord.js`](https://www.npmjs.com/package/discord.js)
+- [`@discordjs/voice`](https://www.npmjs.com/package/@discordjs/voice)
+- [`@distube/ytdl-core`](https://www.npmjs.com/package/@distube/ytdl-core)
+- [`opusscript`](https://www.npmjs.com/package/opusscript) (audio encoder)
+- [`dotenv`](https://www.npmjs.com/package/dotenv)
 
-Jake Ward
+## Security
+
+- Never commit your `.env` — it contains your bot token. `.env` is already in
+  `.gitignore`.
+- Rotate the token in the Discord Developer Portal if it ever leaks.
+- Dependency audit status is checked on every `setup.sh` run and by
+  [CodeQL](./.github/workflows/codeql.yml) on push/PR to `master`.
+
+Report a vulnerability privately via
+[GitHub's private vulnerability reporting](https://github.com/JakeWard98/Ky8er-Bot/security/advisories/new).
+
+## Planned
+
+- Fix `^dc` so it only runs when the caller is in a voice channel
+  (see [#6](https://github.com/JakeWard98/Ky8er-Bot/issues/6))
+- Queue works correctly across multiple plays
+  (see [#9](https://github.com/JakeWard98/Ky8er-Bot/issues/9))
+- Single `^help` that adapts to caller permissions
+
+## Contributors
+
+- Jake Ward

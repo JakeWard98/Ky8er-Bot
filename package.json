@@ -13,13 +13,12 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "@discordjs/voice": "^0.18.0",
-    "opusscript": "^0.1.1",
-    "discord.js": "^14.16.3",
-    "dotenv": "^16.4.5",
-    "@distube/ytdl-core": "^4.16.10"
+    "@discordjs/voice": "^0.19.2",
+    "@distube/ytdl-core": "^4.16.12",
+    "discord.js": "^14.26.3",
+    "dotenv": "^16.6.1",
+    "opusscript": "^0.1.1"
   },
-  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JakeWard98/Ky8er-Bot.git"
