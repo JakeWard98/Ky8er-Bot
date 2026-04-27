@@ -76,6 +76,10 @@ Direct runtime deps (kept minimal):
 - [`opusscript`](https://www.npmjs.com/package/opusscript) (audio encoder)
 - [`dotenv`](https://www.npmjs.com/package/dotenv)
 
+`package.json` also declares an `overrides` block pinning the transitive
+`lodash` dependency to **4.17.21** (the official latest stable on the
+public npm registry). See the *Security* section below for context.
+
 ## Security
 
 - Never commit your `.env` — it contains your bot token. `.env` is already in
@@ -83,6 +87,15 @@ Direct runtime deps (kept minimal):
 - Rotate the token in the Discord Developer Portal if it ever leaks.
 - Dependency audit status is checked on every `setup.sh` run and by
   [CodeQL](./.github/workflows/codeql.yml) on push/PR to `master`.
+
+### Audit log
+
+| Date       | Tooling                            | Result |
+|------------|------------------------------------|--------|
+| 2026-04-27 | Manual GHSA review + `npm audit`   | 0 CVEs after pinning `lodash@4.17.21` via `overrides`. The previous lockfile pinned `lodash@4.18.1`, which is not present on the public npm registry — replaced with the canonical 4.17.21 release. |
+
+After pulling this branch, run `npm install` once to materialise the
+override into your local `node_modules/`.
 
 Report a vulnerability privately via
 [GitHub's private vulnerability reporting](https://github.com/JakeWard98/Ky8er-Bot/security/advisories/new).

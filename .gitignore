@@ -32,7 +32,8 @@ jspm_packages/
 
 # Secrets / env
 .env
-.env.local
+.env.*
+!.env.example
 
 # IDE / editors
 .idea

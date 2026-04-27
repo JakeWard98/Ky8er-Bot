@@ -19,6 +19,9 @@
     "dotenv": "^16.6.1",
     "opusscript": "^0.1.1"
   },
+  "overrides": {
+    "lodash": "4.17.21"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JakeWard98/Ky8er-Bot.git"
