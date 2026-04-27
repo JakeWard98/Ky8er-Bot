@@ -26,6 +26,9 @@ jspm_packages/
 .npm
 .eslintcache
 .node_repl_history
+*.tsbuildinfo
+.cache/
+.parcel-cache/
 
 # Packaging
 *.tgz
@@ -57,4 +60,5 @@ Thumbs.db
 config.json
 temp/
 settings.sqlite3
+obsolete_code.js
 obsolote_code.js

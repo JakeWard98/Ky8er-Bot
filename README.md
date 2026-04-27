@@ -5,7 +5,7 @@ practice code.
 
 ## Requirements
 
-- Node.js **>= 18**
+- Node.js **>= 18** (>= 20 recommended for `@distube/ytdl-core`)
 - A Discord bot token (see
   [Discord Developer Portal](https://discord.com/developers/applications))
 - **Message Content Intent** enabled under *Bot > Privileged Gateway Intents*
@@ -17,7 +17,8 @@ practice code.
 ```
 
 `setup.sh` checks your Node.js version, runs `npm install`, copies
-`.env.example` → `.env` on first run, and runs `npm audit`.
+`.env.example` → `.env` on first run, and runs `npm audit` so any new
+advisories surface immediately.
 
 Then edit `.env` and set your bot token:
 
@@ -76,15 +77,19 @@ Direct runtime deps (kept minimal):
 - [`opusscript`](https://www.npmjs.com/package/opusscript) (audio encoder)
 - [`dotenv`](https://www.npmjs.com/package/dotenv)
 
+Last manual CVE re-audit: **2026-04-27** — see [`CHANGELOG.md`](./CHANGELOG.md)
+for the audit notes. `npm audit` is also run automatically by `setup.sh`.
+
 ## Security
 
-- Never commit your `.env` — it contains your bot token. `.env` is already in
-  `.gitignore`.
+- Never commit your `.env` — it contains your bot token. `.env` is already
+  in `.gitignore`.
 - Rotate the token in the Discord Developer Portal if it ever leaks.
 - Dependency audit status is checked on every `setup.sh` run and by
   [CodeQL](./.github/workflows/codeql.yml) on push/PR to `master`.
 
-Report a vulnerability privately via
+Full security policy, threat model and disclosure process: see
+[`SECURITY.md`](./SECURITY.md). Report a vulnerability privately via
 [GitHub's private vulnerability reporting](https://github.com/JakeWard98/Ky8er-Bot/security/advisories/new).
 
 ## Planned
