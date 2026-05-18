@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Security
+- **2026-05-18 dependency re-audit.** `npm audit` against the current
+  `package-lock.json` returned **0 vulnerabilities** across all 65
+  resolved packages (46 prod, 20 optional, 4 peer). Manual GHSA / NVD
+  cross-check of every pinned direct and notable transitive dep
+  (`discord.js 14.26.3`, `@discordjs/voice 0.19.2`,
+  `@distube/ytdl-core 4.16.12`, `dotenv 16.6.1`, `opusscript 0.1.1`,
+  `undici 6.24.1` / `7.24.8`, `ws 8.20.0`, `tough-cookie 5.1.2`,
+  `lodash 4.18.1`) returned no new advisories in the two weeks since
+  the 2026-05-04 re-audit. No GitHub Security advisories or Dependabot
+  alerts open against the repo. The two `undici` advisories noted on
+  2026-05-04 (CVE-2026-22036, CVE-2026-2581) remain closed by the
+  pinned 6.24.1 / 7.24.8 lockfile versions. No code or dependency
+  version changes required.
 - **2026-05-04 dependency re-audit.** Manual GHSA / NVD cross-check
   of every package pinned in `package-lock.json` returned **0 known
   vulnerabilities** at Critical/High/Moderate/Low. Two new `undici`
@@ -54,9 +67,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `CHANGELOG.md` — this file.
 
 ### Changed
-- `README.md`: link to `SECURITY.md` and `CHANGELOG.md`; clarify that
-  `./setup.sh` runs `npm audit` on every invocation. Audit-date line
-  bumped to **2026-05-04** to match the latest re-audit entry above.
+- `README.md`: audit-date line bumped to **2026-05-18** to match the
+  latest re-audit entry above. Earlier change in this Unreleased block
+  also added the `SECURITY.md` / `CHANGELOG.md` links and clarified
+  that `./setup.sh` runs `npm audit` on every invocation.
 - `.gitignore`: fix typo `obsolote_code.js` → `obsolete_code.js`. The
   old line is kept so any local file already named with the typo stays
   ignored. Also added `*.tsbuildinfo`, `.cache/`, `.parcel-cache/` for
