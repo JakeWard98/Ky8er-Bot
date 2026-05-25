@@ -8,6 +8,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Security
+- **2026-05-25 dependency re-audit — one new advisory fixed.** `npm audit`
+  against the current `package-lock.json` flagged a single new **Moderate**
+  advisory that post-dates the previous (clean) re-audits:
+  - **GHSA-58qx-3vcg-4xpx** — `ws`: uninitialised memory disclosure
+    (CWE-908, CVSS 4.4 Moderate). Affects `ws >=8.0.0 <8.20.1`. The
+    lockfile previously pinned `ws 8.20.0` (hoisted, shared by
+    `@discordjs/voice` → `ws ^8.19.0` and `discord.js` →
+    `@discordjs/ws` → `ws ^8.17.0`). Bumped the locked `ws` to
+    **8.21.0** via `npm audit fix`; both parent ranges already
+    permitted it, so no `package.json` change was needed.
+  After the bump, `npm audit` reports **0 vulnerabilities** across all
+  66 resolved packages. All other direct deps
+  (`discord.js 14.26.3`, `@discordjs/voice 0.19.2`,
+  `@distube/ytdl-core 4.16.12`, `dotenv 16.6.1`, `opusscript 0.1.1`)
+  and notable transitives (`undici 6.24.1` / `7.24.8`,
+  `tough-cookie 5.1.2`, `lodash 4.18.1`) remain clean.
 - **2026-05-04 dependency re-audit.** Manual GHSA / NVD cross-check
   of every package pinned in `package-lock.json` returned **0 known
   vulnerabilities** at Critical/High/Moderate/Low. Two new `undici`
