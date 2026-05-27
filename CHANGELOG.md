@@ -70,9 +70,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `CHANGELOG.md` — this file.
 
 ### Changed
-- `README.md`: link to `SECURITY.md` and `CHANGELOG.md`; clarify that
-  `./setup.sh` runs `npm audit` on every invocation. Audit-date line
-  bumped to **2026-05-04** to match the latest re-audit entry above.
+- `README.md`: audit-date line bumped to **2026-05-18** to match the
+  latest re-audit entry above. Earlier change in this Unreleased block
+  also added the `SECURITY.md` / `CHANGELOG.md` links and clarified
+  that `./setup.sh` runs `npm audit` on every invocation.
 - `.gitignore`: fix typo `obsolote_code.js` → `obsolete_code.js`. The
   old line is kept so any local file already named with the typo stays
   ignored. Also added `*.tsbuildinfo`, `.cache/`, `.parcel-cache/` for
