@@ -8,6 +8,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Security
+- **2026-05-27 dependency re-audit — clean.** `npm audit` against the current
+  `package-lock.json` reported **0 vulnerabilities** across all 65 resolved
+  packages (Critical/High/Moderate/Low/Info). A manual GHSA / NVD cross-check
+  of every direct and notable transitive dep corroborated the automated run:
+  - `ws 8.21.0` — current latest; still clears GHSA-58qx-3vcg-4xpx (the
+    Moderate uninitialised-memory disclosure fixed in the 2026-05-25 bump).
+  - `undici 6.24.1` and `7.24.8` — both above the 6.24.0 / 7.24.0 fixes for
+    GHSA-4992-7rv2-5pvq (CRLF injection via the `client.request()` `upgrade`
+    option, published 2026-03-12), in addition to the earlier 2026 undici
+    DoS / decompression advisories already confirmed patched.
+  - `tough-cookie 5.1.2`, `lodash 4.18.1` — no open advisories.
+  - Direct deps `discord.js 14.26.3`, `@discordjs/voice 0.19.2`,
+    `@distube/ytdl-core 4.16.12`, `dotenv 16.6.1`, `opusscript 0.1.1` — no
+    open advisories.
+  No GitHub Security advisories or Dependabot alerts open against the repo.
+  No code or dependency-version changes required.
 - **2026-05-25 dependency re-audit — one new advisory fixed.** `npm audit`
   against the current `package-lock.json` flagged a single new **Moderate**
   advisory that post-dates the previous (clean) re-audits:
@@ -70,7 +86,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `CHANGELOG.md` — this file.
 
 ### Changed
-- `README.md`: audit-date line bumped to **2026-05-18** to match the
+- `README.md`: audit-date line bumped to **2026-05-27** to match the
   latest re-audit entry above. Earlier change in this Unreleased block
   also added the `SECURITY.md` / `CHANGELOG.md` links and clarified
   that `./setup.sh` runs `npm audit` on every invocation.
