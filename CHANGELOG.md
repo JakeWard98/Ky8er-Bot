@@ -8,6 +8,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Security
+- **2026-06-01 dependency re-audit — clean.** `npm audit` against the current
+  `package-lock.json` reported **0 vulnerabilities** across all 66 resolved
+  packages (Critical/High/Moderate/Low/Info). Manual GHSA / NVD cross-check
+  of every direct and notable transitive dep returned no new advisories in
+  the five days since the 2026-05-27 entry:
+  - `ws 8.21.0` — still clears GHSA-58qx-3vcg-4xpx (uninitialised memory
+    disclosure, Moderate; fixed 8.20.1).
+  - `undici 6.24.1` and `7.24.8` — still above the 6.24.0 / 7.24.0 fixes for
+    GHSA-4992-7rv2-5pvq (CRLF injection via `client.request()` `upgrade`
+    option), CVE-2026-22036 (unbounded decompression DoS), and CVE-2026-2581
+    (`DeduplicationHandler` unbounded memory consumption).
+  - `lodash 4.18.1` — still above the 4.18.0 fix for GHSA-r5fr-rjxr-66jc /
+    CVE-2026-4800 (`_.template` code injection via `options.imports` key
+    names, High).
+  - `tough-cookie 5.1.2` — no open advisories; historic CVE-2023-26136
+    prototype pollution did not affect `>=4.1.3`.
+  - Direct deps `discord.js 14.26.3`, `@discordjs/voice 0.19.2`,
+    `@distube/ytdl-core 4.16.12`, `dotenv 16.6.1`, `opusscript 0.1.1` — no
+    open advisories.
+  No GitHub Security advisories or Dependabot alerts open against the repo.
+  No code or dependency-version changes required.
 - **2026-05-27 dependency re-audit — clean.** `npm audit` against the current
   `package-lock.json` reported **0 vulnerabilities** across all 65 resolved
   packages (Critical/High/Moderate/Low/Info). A manual GHSA / NVD cross-check
@@ -86,7 +107,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `CHANGELOG.md` — this file.
 
 ### Changed
-- `README.md`: audit-date line bumped to **2026-05-27** to match the
+- `README.md`: audit-date line bumped to **2026-06-01** to match the
   latest re-audit entry above. Earlier change in this Unreleased block
   also added the `SECURITY.md` / `CHANGELOG.md` links and clarified
   that `./setup.sh` runs `npm audit` on every invocation.
