@@ -8,6 +8,63 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Security
+- **2026-06-22 dependency re-audit — seven new `undici` advisories fixed.**
+  `npm audit` against the current `package-lock.json` flagged seven new
+  advisories published 2026-06-16 → 2026-06-21 affecting both the `6.x`
+  (via `discord.js` / `@discordjs/rest`) and `7.x` (via
+  `@distube/ytdl-core`) branches resolved in the lockfile. The previous
+  re-audit on 2026-06-15 was clean, so all seven post-date that audit.
+  - **GHSA-vxpw-j846-p89q** — `undici` WebSocket client DoS via fragment
+    count bypass (**High, CVSS 7.5**). Affects `<6.27.0` and
+    `>=7.0.0 <7.28.0`. **Not reachable here:** the bot acts only as a
+    WebSocket *client* to Discord's gateway via `ws` (not `undici`'s
+    WebSocket client) and does not accept inbound WebSocket connections.
+  - **GHSA-hm92-r4w5-c3mj** — `undici` cross-origin request routing via
+    SOCKS5 proxy pool reuse (**High, CVSS 7.5**). Affects
+    `>=7.23.0 <7.28.0`. **Not reachable here:** the bot does not
+    configure `undici.SocksProxyAgent` and `@distube/ytdl-core` uses
+    `https-proxy-agent` (a separate package), not `undici`'s SOCKS5
+    proxy.
+  - **GHSA-vmh5-mc38-953g** — `undici` TLS certificate validation bypass
+    via dropped `requestTls` in SOCKS5 `ProxyAgent` (High, CVSS 7.4).
+    Affects `>=7.23.0 <7.28.0`. **Not reachable here:** same reason as
+    above — no SOCKS5 proxy configuration anywhere in the dependency
+    tree.
+  - **GHSA-pr7r-676h-xcf6** — `undici` cross-user information disclosure
+    via shared cache whitespace bypass (Moderate, CVSS 5.9). Affects
+    `>=7.0.0 <7.28.0`. **Not reachable here:** no shared `undici.Cache`
+    is configured by the bot or by `@distube/ytdl-core`.
+  - **GHSA-p88m-4jfj-68fv** — `undici` HTTP header injection via
+    `Set-Cookie` percent-decoding (Moderate, CVSS 5.9). Affects `<6.27.0`
+    and `>=7.0.0 <7.28.0`. Reachable in principle from `@distube/ytdl-core`
+    (which talks to YouTube via `undici`), but the bot never reflects
+    upstream response headers anywhere.
+  - **GHSA-35p6-xmwp-9g52** — `undici` HTTP response queue poisoning via
+    keep-alive socket reuse (Low, CVSS 3.7). Affects `<6.27.0` and
+    `>=7.0.0 <7.28.0`.
+  - **GHSA-g8m3-5g58-fq7m** — `undici` `Set-Cookie` `SameSite` attribute
+    downgrade via permissive substring matching (Low, CVSS 3.7). Affects
+    `<6.27.0` and `>=7.0.0 <7.28.0`.
+
+  All seven are fixed by `undici >= 6.27.0` (6.x branch) and
+  `undici >= 7.28.0` (7.x branch). Patched by adding scoped
+  `overrides` to `package.json`:
+  - `discord.js > undici` → `^6.27.0`
+  - `@discordjs/rest > undici` → `^6.27.0`
+  - `@distube/ytdl-core > undici` → `^7.28.0`
+
+  After regenerating the lockfile, `npm audit` reports **0
+  vulnerabilities** across all 48 resolved packages. The overrides are
+  scoped to specific parent packages so the 6.x branch (paired with the
+  Discord HTTP/gateway client) and 7.x branch (paired with ytdl-core)
+  stay isolated, matching the pre-bump topology. Smoke test: `discord.js`,
+  `@discordjs/voice`, and `@distube/ytdl-core` all `require()` cleanly,
+  `main.js` parses, and the resolved undici versions are 6.27.0 (both
+  6.x consumers) and 7.28.0 (ytdl-core).
+
+  Highest CVSS in this batch is 7.5, which does not exceed the >7.5
+  auto-merge threshold set for the dependency-audit routine, so this PR
+  is left for human review.
 - **2026-06-15 dependency re-audit — clean.** `npm audit` against the current
   `package-lock.json` reported **0 vulnerabilities** across all 65 resolved
   packages (Critical/High/Moderate/Low/Info). Manual GHSA / NVD cross-check

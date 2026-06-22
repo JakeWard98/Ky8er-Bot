@@ -19,6 +19,17 @@
     "dotenv": "^16.6.1",
     "opusscript": "^0.1.1"
   },
+  "overrides": {
+    "discord.js": {
+      "undici": "^6.27.0"
+    },
+    "@discordjs/rest": {
+      "undici": "^6.27.0"
+    },
+    "@distube/ytdl-core": {
+      "undici": "^7.28.0"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JakeWard98/Ky8er-Bot.git"
