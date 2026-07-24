@@ -77,7 +77,7 @@ Direct runtime deps (kept minimal):
 - [`opusscript`](https://www.npmjs.com/package/opusscript) (audio encoder)
 - [`dotenv`](https://www.npmjs.com/package/dotenv)
 
-Last manual CVE re-audit: **2026-06-15** — see [`CHANGELOG.md`](./CHANGELOG.md)
+Last manual CVE re-audit: **2026-06-22** — see [`CHANGELOG.md`](./CHANGELOG.md)
 for the audit notes. `npm audit` is also run automatically by `setup.sh`.
 
 ## Security
