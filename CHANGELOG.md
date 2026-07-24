@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Security
+- **2026-07-24 dependency re-audit — clean after merging #37.**
+  Scheduled routine audit. The 2026-06-22 fix PR (#37, seven `undici`
+  advisories, see entry below) had been left open for review; verified its
+  lockfile still audits clean against today's advisory database and merged it
+  as part of this audit. Post-merge `npm audit` against `package-lock.json`
+  reports **0 vulnerabilities** across all resolved packages. No advisories
+  published since 2026-06-22 affect any direct or transitive dependency.
+  Reviewed all five direct dependencies (`discord.js`, `@discordjs/voice`,
+  `@distube/ytdl-core`, `dotenv`, `opusscript`) for unused entries — all are
+  in active use, nothing to prune. No version changes.
+
 - **2026-06-22 dependency re-audit — seven new `undici` advisories fixed.**
   `npm audit` against the current `package-lock.json` flagged seven new
   advisories published 2026-06-16 → 2026-06-21 affecting both the `6.x`
