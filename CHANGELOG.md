@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Security
+- **2026-07-27 dependency re-audit — clean, no new advisories; lockfile
+  refreshed in-range.**
+  Scheduled routine audit. `npm audit` against `package-lock.json` reports
+  **0 vulnerabilities**, and a manual cross-check via the npm bulk-advisory
+  endpoint over all 59 resolved packages returned 0 advisories — both before
+  and after the lockfile refresh below. A web sweep confirmed the four
+  March-2026 undici advisories not covered by earlier entries
+  (GHSA-vrm6-8vpv-qv8q, GHSA-phc3-fgpg-7m6h, GHSA-4992-7rv2-5pvq,
+  GHSA-2mjp-6q6p-2qxm — all fixed in undici 6.24.0 / 7.24.0) are already
+  closed by the pinned `6.27.0` / `7.28.0+` overrides. No open Dependabot
+  alerts or security PRs. Nothing to patch.
+
 - **2026-07-24 dependency re-audit — clean after merging #37.**
   Scheduled routine audit. The 2026-06-22 fix PR (#37, seven `undici`
   advisories, see entry below) had been left open for review; verified its
@@ -187,6 +199,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     `@distube/ytdl-core` 4.16.12, `dotenv` 16.6.1 — no open advisories.
 
   No code or dependency-version changes were required by this audit.
+
+### Dependencies
+- **2026-07-27: lockfile refreshed within existing semver ranges** (no
+  `package.json` changes): `discord.js 14.26.3 → 14.27.0`,
+  `undici 7.28.0 → 7.29.0`, `ws 8.21.0 → 8.21.1`, `@discordjs/rest
+  2.6.1 → 2.6.3`, plus assorted transitive patch bumps. `npm audit` clean on
+  the refreshed set; `node --check` passes on `main.js` and all command files.
+  `dotenv` stays on `16.6.1` — `17.x` is a major bump outside the declared
+  `^16` range and carries no security content, so it is deliberately not
+  taken.
 
 ### Added
 - `SECURITY.md` — supported versions, private disclosure process, threat
