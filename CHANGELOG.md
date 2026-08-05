@@ -8,6 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Security
+- **2026-08-05 dependency re-audit — clean, no new advisories; lockfile
+  refreshed in-range.**
+  Scheduled routine audit. `npm audit` against `package-lock.json` reports
+  **0 vulnerabilities**, and a manual cross-check via the npm bulk-advisory
+  endpoint over all 59 resolved packages returned 0 advisories — both before
+  and after the in-range lockfile refresh (`@types/node → 26.1.2`,
+  `discord-api-types → 0.38.52`, `ws → 8.21.2`,
+  `@napi-rs/wasm-runtime → 1.2.2`). A web sweep found no advisory published
+  since the 2026-07-27 re-audit affecting any package in the tree; the
+  June-2026 `undici` advisory set remains closed by the pinned
+  `6.27.0` / `7.28.0+` overrides. All five direct dependencies
+  (`discord.js`, `@discordjs/voice`, `@distube/ytdl-core`, `dotenv`,
+  `opusscript`) remain in active use — nothing to prune. No open Dependabot
+  alerts, security PRs, or issues on the repository. Nothing to patch.
+
 - **2026-07-27 dependency re-audit — clean, no new advisories; lockfile
   refreshed in-range.**
   Scheduled routine audit. `npm audit` against `package-lock.json` reports
