@@ -8,6 +8,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Security
+- **2026-08-10 dependency re-audit — clean; August undici advisory set
+  confirmed closed; lockfile refreshed in-range.**
+  Scheduled routine audit. `npm audit` against `package-lock.json` reports
+  **0 vulnerabilities** — both before and after the in-range lockfile refresh
+  (`@types/node → 26.2.0`, `discord-api-types → 0.38.53`, `ws → 8.21.3`).
+  A GitHub Advisory Database sweep found a new `undici` advisory batch
+  published 2026-08-03 — notably GHSA-4cwx-7wf7-3272 / CVE-2026-13697
+  (High, CVSS 7.4: cache-interceptor shared-cache info disclosure +
+  parse-time crash on malformed `Cache-Control: private` directives,
+  affecting `>=7.0.0 <7.29.0` and `>=8.0.0 <8.9.0`) plus four Moderate
+  advisories. **Already closed in this tree**: the lockfile resolves
+  `undici 7.29.0` (the patched version) for `@distube/ytdl-core`, and the
+  `discord.js` / `@discordjs/rest` copies resolve `6.28.0`, which is outside
+  every affected range (confirmed by the clean `npm audit`). No other new
+  advisory affects any package in the tree. All five direct dependencies
+  remain in active use — nothing to prune; `dotenv 17.x` and `undici 8.x`
+  majors deliberately not taken (out of range, no security need). No open
+  pull requests or issues on the repository. Nothing left to patch; no
+  unpatched advisory ≥ 7.5 CVSS (or any severity) in the resolved tree.
+
 - **2026-08-05 dependency re-audit — clean, no new advisories; lockfile
   refreshed in-range.**
   Scheduled routine audit. `npm audit` against `package-lock.json` reports
