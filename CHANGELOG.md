@@ -8,6 +8,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Security
+- **2026-08-24 dependency re-audit — clean, no new advisories; lockfile
+  already current in-range.**
+  Scheduled routine audit. `npm audit` against `package-lock.json` reports
+  **0 vulnerabilities** across all resolved packages, and an in-range
+  `npm install --package-lock-only` refresh produced no changes — the tree
+  is already at the newest in-range versions (`discord.js 14.27.0`,
+  `undici 7.29.0` for `@distube/ytdl-core`, `undici 6.28.0` for
+  `discord.js` / `@discordjs/rest`). A GitHub Advisory Database / web sweep
+  found no advisory affecting any package in the tree published since the
+  2026-08-17 re-audit — the newest relevant `undici` advisories remain the
+  June/July 2026 batches (notably GHSA-4cwx-7wf7-3272, High, CVSS 7.4),
+  all closed by the resolved `7.29.0` / out-of-range `6.28.0` copies. All
+  five direct dependencies remain in active use — nothing to prune;
+  `.gitignore` reviewed, already comprehensive; the `dotenv 17.x` major
+  deliberately not taken (out of range, no security need). No open pull
+  requests or issues on the repository. Nothing to patch; no unpatched
+  advisory ≥ 7.5 CVSS (or any severity) in the resolved tree. (Note: the
+  Dependabot alerts API was not reachable from this run's environment;
+  coverage came from `npm audit` — which mirrors the GitHub Advisory
+  Database — plus the web sweep.)
+
 - **2026-08-17 dependency re-audit — clean, no new advisories; lockfile
   already current in-range.**
   Scheduled routine audit. `npm audit` against `package-lock.json` reports
