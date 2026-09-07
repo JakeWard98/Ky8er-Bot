@@ -8,6 +8,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Security
+- **2026-09-07 dependency audit — patched the September 2026 `undici`
+  security batch: bumped `undici` to `7.29.1` / `6.28.1` (override floors
+  raised to `^7.29.1` / `^6.28.1`).**
+  Scheduled routine audit. `npm audit` against `package-lock.json` reported
+  **0 vulnerabilities**, but the manual release sweep caught a batch of
+  nine `undici` security advisories fixed in `7.29.1` / `6.28.1`
+  (published 2026-09-04 — too new to be flagged by `npm audit` at run
+  time), two of them High and both affecting this tree's resolved copies:
+  - **CVE-2026-19534 / GHSA-rfgv-xxqx-mfg5 (High, CVSS 7.5)** — the
+    WebSocket client throws an uncaught `TypeError` (inside a
+    `queueMicrotask` with no error handling, crashing the whole Node
+    process) when a server's handshake response selects a
+    `Sec-WebSocket-Protocol` the client never requested; a remote DoS
+    vector with no workaround. Affects `6.7.0–6.28.0` and
+    `7.0.0–7.29.0` — i.e. **both** previously resolved copies
+    (`7.29.0` for `@distube/ytdl-core`, `6.28.0` for `discord.js` /
+    `@discordjs/rest`).
+  - **CVE-2026-84961 / GHSA-w293-vg96-wgc3 (High, CVSS 7.4)** —
+    `BalancedPool` JSON-deep-clones constructor options, silently
+    dropping function-valued TLS options such as `checkServerIdentity`,
+    bypassing custom certificate validation. Affects `>=7.24.1 <7.29.1`
+    — i.e. the previously resolved `7.29.0` copy.
+  The remaining seven advisories in the batch are Moderate/Low
+  (permessage-deflate decompression limits, `WebSocketStream` close
+  handling, shared-cache `Set-Cookie` disclosure, retry/framing
+  validation, unsafe-method caching). Fix: raised the `package.json`
+  override floors from `^7.28.0` / `^6.27.0` to `^7.29.1` / `^6.28.1` and
+  regenerated the lockfile — the tree now resolves `undici 7.29.1` (for
+  `@distube/ytdl-core`) and `6.28.1` (for `discord.js` /
+  `@discordjs/rest`), the patched releases on the `seven` / `six`
+  dist-tags. `npm audit` remains clean after the bump. Per the standing
+  ≥ 7.5 CVSS rule, this was patched and merged in the same run. All five
+  direct dependencies remain in active use — nothing to prune;
+  `.gitignore` and project Markdown docs reviewed, no updates needed; the
+  `dotenv 17.x` / `undici 8.x` majors remain deliberately not taken (out
+  of range, no security need — `8.10.2` is the 8.x patched release, not
+  applicable here). No open pull requests or issues on the repository.
+  (Note: the Dependabot alerts API was not reachable from this run's
+  environment; coverage came from `npm audit` plus a manual GitHub
+  Advisory Database / upstream-release sweep — the latter is what caught
+  this batch.)
+
 - **2026-08-31 dependency re-audit — clean, no new advisories; lockfile
   already current in-range.**
   Scheduled routine audit. `npm audit` against `package-lock.json` reports
