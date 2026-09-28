@@ -8,6 +8,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Security
+- **2026-09-28 dependency re-audit — clean, nothing to patch.**
+  Scheduled routine audit. `npm audit` against `package-lock.json` reports
+  **0 vulnerabilities** (46 prod / 65 total packages). The manual sweep
+  confirms the resolved `undici 7.29.1` / `6.28.1` copies are the patched
+  releases for the entire 2026-09-04 advisory batch (CVE-2026-19534 /
+  GHSA-rfgv-xxqx-mfg5 and the nine sibling advisories) — no undici
+  advisory has been published since; `undici 6.29.0` / `7.30.0`
+  (2026-09-25) are routine, non-security releases already permitted by
+  the `^6.28.1` / `^7.29.1` override floors. Direct dependencies are at
+  their latest releases (`discord.js 14.27.0` resolved under `^14.26.3`,
+  `@discordjs/voice 0.19.2`, `@distube/ytdl-core 4.16.12`,
+  `opusscript 0.1.1`) with one exception: `dotenv 16.6.1` has a new
+  **major** line (18.x) with no security content — deliberately not
+  taken during a security audit. No open Dependabot PRs or security
+  issues on the repository. Nothing to patch; no advisory ≥ 7.5 CVSS
+  (or any severity) unpatched in this tree this run. (Same-run note: the
+  September 2026 PyJWT advisory batch — one Critical, three Highs —
+  affects the Python ecosystem only and has no bearing on this Node
+  stack.) `.gitignore` and project Markdown docs reviewed, no updates
+  needed. (Note: the Dependabot alerts API was not reachable from this
+  run's environment; coverage came from `npm audit` — GitHub Advisory
+  DB — plus a manual advisory sweep and upstream release pages.)
+
 - **2026-09-07 dependency audit — patched the September 2026 `undici`
   security batch: bumped `undici` to `7.29.1` / `6.28.1` (override floors
   raised to `^7.29.1` / `^6.28.1`).**
