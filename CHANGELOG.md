@@ -8,6 +8,59 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Security
+- **2026-10-28 security audit — patched the October 2026 `undici`
+  advisory batch (`undici` → `6.29.1` / `7.30.1`) and raised the Node.js
+  runtime floor to the 2026-10-21 security releases (CVE-2026-111497
+  "Node2Shell").**
+  Scheduled routine audit plus a targeted "*2Shell" sweep.
+  - **`undici` batch (8 advisories, published 2026-10-15; max CVSS 7.5)**
+    — `npm audit` flagged both resolved copies (`6.28.1` under
+    `discord.js` / `@discordjs/rest`, `7.29.1` under
+    `@distube/ytdl-core` / `http-cookie-agent`). Highs:
+    GHSA-xjj6-f33q-929c (unhandled error on excessive
+    content-encodings, 7.5), GHSA-qrxm-fqhp-jwvm (TLS 1.2
+    certificate-changing renegotiation DoS, 7.5), GHSA-2m5v-pch6-74hx
+    (TLS options dropped in `Agent`, certificate-validation bypass,
+    7.4), GHSA-4w7w-5xrc-9h26 (cache poisoning via cross-origin
+    redirects, 7.4, 7.x only). Moderates: GHSA-4qv8-2p9j-2685,
+    GHSA-9fm3-97px-rjf6, GHSA-f72v-6w45-q472, GHSA-55wc-3pg8-jfw6.
+    Fix: override floors raised from `^6.28.1` / `^7.29.1` to `^6.29.1`
+    / `^7.30.1`; lockfile regenerated (only the three `undici` entries
+    and the root `engines` changed). `npm audit` → 0 vulnerabilities.
+  - **Node2Shell — CVE-2026-111497 (Brotli decoder out-of-bounds write →
+    RCE; CVSS 4.0 9.2, Node.js rates it High)** — fixed in the
+    2026-10-21 Node.js security release (`22.23.4`, `24.22.1`,
+    `26.12.1`) together with nine other CVEs, including two High TLS
+    hostname-verification bypasses (CVE-2026-105483, CVE-2026-106069)
+    and a High `dns.resolve` NUL-truncation issue (CVE-2026-105482). The
+    vulnerable code is the runtime's bundled Brotli decoder, not an npm
+    package, and the bot's default code paths do not Brotli-decode
+    remote data (`@discordjs/rest` and `@distube/ytdl-core` use
+    `undici.request`, the gateway uses zlib inflate). But `engines`
+    still advertised `>=18.0.0` and `setup.sh` accepted Node 18+, so the
+    project explicitly permitted runtimes that are vulnerable — and, for
+    18.x / 20.x / 23.x / 25.x, end-of-life and never getting the fix.
+    Fix: `engines.node` is now `^22.23.4 || ^24.22.1 || >=26.12.1`
+    (also matching `@discordjs/voice 0.19.2`'s own `>=22.12.0`
+    requirement, which the old `>=18` floor contradicted), a new
+    `.npmrc` sets `engine-strict=true` so `npm install` / `npm ci`
+    refuse an unpatched runtime, and `setup.sh` enforces the same
+    per-line floor (replacing the old major-only `>= 18` check).
+    README / SECURITY.md runtime requirements updated to match.
+  - **PHP2Shell (CVE-2026-109618 / CVE-2026-109619)** and
+    **React2Shell (CVE-2025-55182 and follow-ups)** — not applicable:
+    no PHP, React, Next.js or React Server Components packages anywhere
+    in the tree.
+  Validated on Node `22.23.4`: `npm ci` (with `engine-strict`), all 15
+  command modules load, `main.js` boots to the login step, `npm audit`
+  clean; `npm ci` on the unpatched `22.22.0` is refused (`EBADENGINE`)
+  and the `setup.sh` gate passes a 22-case version matrix. The
+  `dotenv 18.x` and `@distube/ytdl-core 5.x` majors remain deliberately
+  not taken (no security content). (Note: the Dependabot / code-scanning
+  alerts APIs returned 403 to this run's GitHub integration; coverage
+  came from `npm audit` — GitHub Advisory DB — plus a manual advisory
+  sweep and the upstream Node.js security bulletin.)
+
 - **2026-09-28 dependency re-audit — clean, nothing to patch.**
   Scheduled routine audit. `npm audit` against `package-lock.json` reports
   **0 vulnerabilities** (46 prod / 65 total packages). The manual sweep
