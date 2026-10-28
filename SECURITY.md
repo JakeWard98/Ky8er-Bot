@@ -41,6 +41,11 @@ untrusted operators.
   potentially sensitive data) to the console.
 - **Bot replying to its own messages.** The `messageCreate` handler bails
   out on `message.author.bot`.
+- **Installing on an unpatched Node.js runtime.** `engines` in
+  `package.json` (enforced by `engine-strict=true` in `.npmrc`) and the
+  version gate in `setup.sh` refuse any runtime older than the
+  2026-10-21 security releases (`22.23.4` / `24.22.1` / `26.12.1`).
+  `npm start` itself does not re-check the version.
 
 ### What Ky8er-Bot does **not** defend against
 
@@ -59,8 +64,14 @@ untrusted operators.
 
 ## Operational recommendations
 
-- Keep your Node.js runtime on an LTS release (`>=18`, currently `>=20`
-  recommended for `@distube/ytdl-core`).
+- Keep your Node.js runtime on a patched release: `22.23.4+`, `24.22.1+`
+  (LTS, recommended) or `26.12.1+`. These carry the 2026-10-21 Node.js
+  security release, including the fix for CVE-2026-111497 ("Node2Shell",
+  an out-of-bounds write in the Brotli decoder bundled into the runtime).
+  Node.js 18.x / 20.x and the odd-numbered lines are end-of-life and will
+  never receive that fix. `package.json` `engines` plus `engine-strict` in
+  `.npmrc` make `npm install` refuse older runtimes, and `setup.sh`
+  enforces the same floor.
 - Re-run `./setup.sh` periodically — it runs `npm install` and
   `npm audit` so you'll see new advisories as they're published.
 - Don't commit `.env`, `config.json`, or `settings.sqlite3` (already in

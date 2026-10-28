@@ -5,7 +5,11 @@ practice code.
 
 ## Requirements
 
-- Node.js **>= 18** (>= 20 recommended for `@distube/ytdl-core`)
+- Node.js **22.23.4+**, **24.22.1+** (LTS, recommended) or **26.12.1+** —
+  the 2026-10-21 Node.js security releases, which fix CVE-2026-111497
+  ("Node2Shell", Brotli decoder RCE). Older releases and end-of-life lines
+  (18.x, 20.x, 23.x, 25.x) are refused by `setup.sh` and by `npm install`
+  (`engine-strict` in `.npmrc`).
 - A Discord bot token (see
   [Discord Developer Portal](https://discord.com/developers/applications))
 - **Message Content Intent** enabled under *Bot > Privileged Gateway Intents*
@@ -16,9 +20,9 @@ practice code.
 ./setup.sh
 ```
 
-`setup.sh` checks your Node.js version, runs `npm install`, copies
-`.env.example` → `.env` on first run, and runs `npm audit` so any new
-advisories surface immediately.
+`setup.sh` checks your Node.js version (refusing unpatched runtimes),
+runs `npm install`, copies `.env.example` → `.env` on first run, and runs
+`npm audit` so any new advisories surface immediately.
 
 Then edit `.env` and set your bot token:
 
@@ -77,7 +81,7 @@ Direct runtime deps (kept minimal):
 - [`opusscript`](https://www.npmjs.com/package/opusscript) (audio encoder)
 - [`dotenv`](https://www.npmjs.com/package/dotenv)
 
-Last manual CVE re-audit: **2026-08-10** — see [`CHANGELOG.md`](./CHANGELOG.md)
+Last manual CVE re-audit: **2026-10-28** — see [`CHANGELOG.md`](./CHANGELOG.md)
 for the audit notes. `npm audit` is also run automatically by `setup.sh`.
 
 ## Security
