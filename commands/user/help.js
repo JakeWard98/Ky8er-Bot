@@ -19,7 +19,7 @@ class HelpCommand {
                 { name: 'name', value: 'The bot displays the users global Discord Name & Tag' },
                 { name: 'join', value: 'The Bot joins your Voice Channel' },
                 { name: 'dc', value: 'The Bot leaves the Voice Channel' },
-                { name: 'play + YT URL', value: 'The Bot Plays the Song [No Queue System atm]' }
+                { name: 'play + YT URL', value: 'Plays the song, or adds it to the queue (max 50)' }
             )
             .setTimestamp()
             .setFooter({ text: 'Bot Still in Development' });

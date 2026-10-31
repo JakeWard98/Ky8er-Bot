@@ -35,7 +35,13 @@ jspm_packages/
 
 # Secrets / env
 .env
-.env.local
+.env.*
+!.env.example
+
+# Node diagnostics (reports include environment variables such as TOKEN)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+*.heapsnapshot
+*.cpuprofile
 
 # IDE / editors
 .idea

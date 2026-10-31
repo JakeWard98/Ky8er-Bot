@@ -10,6 +10,8 @@ practice code.
   ("Node2Shell", Brotli decoder RCE). Older releases and end-of-life lines
   (18.x, 20.x, 23.x, 25.x) are refused by `setup.sh` and by `npm install`
   (`engine-strict` in `.npmrc`).
+- **FFmpeg** on the `PATH` (needed to transcode YouTube audio for `^play`;
+  e.g. `apt install ffmpeg`)
 - A Discord bot token (see
   [Discord Developer Portal](https://discord.com/developers/applications))
 - **Message Content Intent** enabled under *Bot > Privileged Gateway Intents*
@@ -47,9 +49,8 @@ npm start
 | `^help`              | List user commands                                   |
 | `^hello`             | Bot replies with a greeting                          |
 | `^server`            | Show the server name                                 |
-| `^numbers`           | Show the number of users in the server               |
 | `^id`                | Show the caller's Discord ID                         |
-| `^name`              | Show the caller's global Discord name and tag        |
+| `^name`              | Show the caller's Discord username                   |
 
 ### Mod
 
@@ -57,19 +58,18 @@ npm start
 |----------------------|------------------------------------------------------|
 | `^modhelp`           | List mod commands                                    |
 | `^ping`              | Show the bot's websocket heartbeat ping              |
-| `^serverno` / alias  | Show the server's internal number                    |
+| `^numbers`           | Show the number of members in the server             |
+
+Mod commands require the **Manage Messages** permission.
 
 ### Voice
 
 | Command              | Description                                          |
 |----------------------|------------------------------------------------------|
 | `^join`              | Bot joins the caller's voice channel                 |
-| `^dc` / `^leave`     | Bot leaves the voice channel                         |
-| `^play <url>`        | Queue or play a YouTube URL                          |
-| `^queue`             | Show the queue                                       |
-| `^skip`              | Skip the current track                               |
-| `^pause`             | Pause playback                                       |
-| `^np`                | Show the now-playing track                           |
+| `^dc`                | Bot leaves (caller must be in the bot's channel, or have Move Members) |
+| `^play <url>`        | Play a YouTube video URL, or add it to the queue (max 50) |
+| `^queue`, `^skip`, `^pause`, `^np` | Not implemented yet (reply with a placeholder) |
 
 ## Dependencies
 
@@ -89,8 +89,9 @@ for the audit notes. `npm audit` is also run automatically by `setup.sh`.
 - Never commit your `.env` — it contains your bot token. `.env` is already
   in `.gitignore`.
 - Rotate the token in the Discord Developer Portal if it ever leaks.
-- Dependency audit status is checked on every `setup.sh` run and by
-  [CodeQL](./.github/workflows/codeql.yml) on push/PR to `master`.
+- `setup.sh` runs `npm audit` on every run, and
+  [CodeQL](./.github/workflows/codeql.yml) statically analyses the code on
+  push/PR to `master`.
 
 Full security policy, threat model and disclosure process: see
 [`SECURITY.md`](./SECURITY.md). Report a vulnerability privately via
@@ -98,10 +99,7 @@ Full security policy, threat model and disclosure process: see
 
 ## Planned
 
-- Fix `^dc` so it only runs when the caller is in a voice channel
-  (see [#6](https://github.com/JakeWard98/Ky8er-Bot/issues/6))
-- Queue works correctly across multiple plays
-  (see [#9](https://github.com/JakeWard98/Ky8er-Bot/issues/9))
+- Implement `^queue`, `^skip`, `^pause` and `^np`
 - Single `^help` that adapts to caller permissions
 
 ## Contributors

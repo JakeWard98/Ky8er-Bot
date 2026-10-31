@@ -33,12 +33,25 @@ untrusted operators.
 
 ### What Ky8er-Bot defends against
 
-- **Token leakage to source control.** `.env` is in `.gitignore`. Only
-  `.env.example` (with placeholder values) is tracked.
+- **Token leakage to source control.** `.env` and every `.env.*` variant
+  are in `.gitignore`, as are Node diagnostic reports and heap snapshots
+  (which include environment variables such as `TOKEN`). Only `.env.example`
+  (with placeholder values) is tracked. `setup.sh` creates `.env` readable by
+  its owner only.
 - **Unhandled command errors crashing the process.** A `try/catch` around
-  `command.execute()` and a top-level `unhandledRejection` handler keep
-  the bot alive and log the error message (not the full stack with
-  potentially sensitive data) to the console.
+  `command.execute()` and a top-level `unhandledRejection` handler log the
+  error message (not the full stack with potentially sensitive data).
+  These do **not** catch exceptions thrown inside event listeners, so the
+  voice code guards its own listeners: a failing track advances the queue
+  exactly once, a destroyed connection is never destroyed again, and voice
+  connections have an `'error'` listener.
+- **Mass pings through the bot.** The client sets
+  `allowedMentions: { parse: [] }`, so echoed text (such as a guild name
+  containing `@everyone`) never pings anyone.
+- **Queue abuse.** `^play` accepts only YouTube video URLs (validated by
+  `ytdl-core`), stores just the video ID, and caps each guild's queue at 50.
+  `^dc` requires the caller to be in the bot's voice channel or to have
+  Move Members.
 - **Bot replying to its own messages.** The `messageCreate` handler bails
   out on `message.author.bot`.
 - **Installing on an unpatched Node.js runtime.** `engines` in
@@ -55,10 +68,10 @@ untrusted operators.
 - **A malicious server admin.** Mod commands are gated by Discord
   permissions on the calling user; if you grant mod rights to a hostile
   user, they get mod-level commands.
-- **Arbitrary YouTube content from `^play`.** `@distube/ytdl-core`
-  fetches and decodes whatever URL is passed. Audio is sent into the
-  voice channel as-is. Don't run the bot on a host where loud audio is
-  itself a problem.
+- **Arbitrary YouTube content from `^play`.** Any YouTube video a member
+  links is played as-is (`ytdl-core` only contacts YouTube, by video ID, and
+  the media URLs YouTube returns). Don't run the bot on a host where loud
+  audio is itself a problem.
 - **DoS via spammed commands.** No per-user rate limiting is
   implemented; rely on Discord's own rate limits.
 
