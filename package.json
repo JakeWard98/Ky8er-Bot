@@ -1,6 +1,7 @@
 {
   "name": "ky8er-bot",
   "version": "0.0.1",
+  "private": true,
   "description": "First Bot",
   "main": "main.js",
   "scripts": {

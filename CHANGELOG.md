@@ -8,6 +8,69 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Security
+- **2026-10-28 audit — bot code fixes from the manual security review (1
+  High, 1 Moderate, 6 Low) and CI action updates.**
+  Each finding was reproduced against the real `main.js`: Discord login
+  was stubbed, while `@discordjs/voice`, `ytdl-core` and ffmpeg were real.
+  - **High: one `^play` message crashed the bot.** For a single failing
+    track, the stream `'error'`, the player `'error'` and the player
+    `Idle` events each called `playNext()`. The second call destroyed an
+    already-destroyed voice connection, an uncaught exception inside an
+    event listener that exited the process. Any member in voice could
+    trigger it with a playlist link, a link without `https://`, an
+    unavailable video or a network error. Now:
+    - a failing track advances the queue exactly once;
+    - `playNext()` is a no-op on a destroyed connection;
+    - setup errors (including a missing ffmpeg) are caught.
+    Verified: every crash input is now rejected or skipped, and the
+    process stays up.
+  - **Moderate: `^dc` leaked an ffmpeg process per use.** `^dc` (and a
+    voice disconnect) destroyed the connection without stopping the
+    player, which then kept ffmpeg and the YouTube stream alive. A later
+    stream error crashed the process as above. Both paths now stop the
+    player: 0 ffmpeg processes remain after repeated play/`^dc`, down from
+    1 per cycle.
+  - **Low:**
+    - **URL check and queue.** `^play` now validates with
+      `ytdl.validateURL`, stores only the video ID and caps each guild's
+      queue at 50; before, it held 10,000 entries (about 40 MB) after a
+      spam. `^play` after `^join` now actually plays.
+    - **Mentions.** `allowedMentions: { parse: [] }` stops echoed text
+      such as a guild name containing `@everyone` from mass-pinging
+      through `^server`.
+    - **Voice connection errors.** Voice connections now have an `'error'`
+      listener, so a transport error is logged instead of crashing the
+      process.
+    - **`^dc` permissions.** `^dc` now requires the caller to be in the
+      bot's channel or to have Move Members; it previously had no check.
+    - **`.gitignore`.** It now covers `.env.*` variants (`.env.example`
+      stays tracked) and Node diagnostic reports and heap snapshots, which
+      include the `TOKEN` environment variable.
+    - **`setup.sh`.** It creates `.env` with owner-only permissions (was
+      644) and runs from its own directory.
+  - **CI:** `github/codeql-action` v3.35.2 → **v4.39.1** (v3 is
+    deprecated in December 2026 and declared the removed Node 20 runtime).
+    `actions/checkout` v4.2.2 → **v6.1.0** with
+    `persist-credentials: false`. Both SHAs were verified against their
+    upstream tags with `git ls-remote`.
+  - **Hygiene:**
+    - commands load and `.env` is read relative to `main.js`, so the bot
+      starts from any working directory;
+    - `client.once(Events.ClientReady)` replaces the deprecated `'ready'`
+      event;
+    - `"private": true` guards against an accidental `npm publish`;
+    - stale "[No Queue System atm]" help text is updated.
+  - **Docs:**
+    - README command tables now match the code (no `^serverno` /
+      `^leave`; `^numbers` is a mod command; the queue/skip/pause/np stubs
+      are marked as not implemented);
+    - FFmpeg is listed as a requirement;
+    - the "Planned" items fixed here are removed;
+    - CodeQL is described as static analysis rather than a dependency
+      audit;
+    - SECURITY.md's claims about crash protection and what `ytdl-core`
+      fetches are corrected.
+
 - **2026-10-28 security audit — patched the October 2026 `undici`
   advisory batch (`undici` → `6.29.1` / `7.30.1`) and raised the Node.js
   runtime floor to the 2026-10-21 security releases (CVE-2026-111497

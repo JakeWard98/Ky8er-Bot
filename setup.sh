@@ -2,6 +2,7 @@
 # setup.sh — First-time setup for Ky8er-Bot
 
 set -e
+cd "$(dirname "$0")"
 
 echo "=== Ky8er-Bot Setup ==="
 echo
@@ -46,7 +47,8 @@ echo
 # Check for .env file
 if [ ! -f .env ]; then
     echo "No .env file found. Creating from .env.example..."
-    cp .env.example .env
+    # Owner-only permissions: .env holds the bot token.
+    (umask 077 && cp .env.example .env)
     echo
     echo "IMPORTANT: Edit the .env file and add your Discord bot token:"
     echo "  TOKEN=your_discord_bot_token_here"

@@ -15,11 +15,12 @@ class Join {
             return message.reply('I am already in a Voice Channel!');
         }
         try {
-            joinVoiceChannel({
+            const connection = joinVoiceChannel({
                 channelId: voiceChannel.id,
                 guildId: message.guild.id,
                 adapterCreator: voiceChannel.guild.voiceAdapterCreator,
             });
+            connection.on('error', (err) => console.error('Voice connection error:', err.message));
             message.reply('Successfully Joined!');
         } catch (err) {
             console.error('Join error:', err.message);

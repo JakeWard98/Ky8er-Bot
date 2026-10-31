@@ -1,5 +1,6 @@
-require('dotenv').config();
-const { Client, GatewayIntentBits, Collection } = require('discord.js');
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
+const { Client, GatewayIntentBits, Collection, Events } = require('discord.js');
 const fs = require('fs');
 
 const client = new Client({
@@ -9,6 +10,8 @@ const client = new Client({
         GatewayIntentBits.MessageContent,
         GatewayIntentBits.GuildVoiceStates,
     ],
+    // Never let echoed text (e.g. a guild name) ping @everyone, roles or users.
+    allowedMentions: { parse: [], repliedUser: true },
 });
 
 client.commands = new Collection();
@@ -16,17 +19,18 @@ const prefix = '^';
 const servers = {};
 
 // Load commands from subdirectories
-for (const dir of fs.readdirSync('./commands')) {
-    const dirPath = `./commands/${dir}`;
+const commandsDir = path.join(__dirname, 'commands');
+for (const dir of fs.readdirSync(commandsDir)) {
+    const dirPath = path.join(commandsDir, dir);
     if (!fs.statSync(dirPath).isDirectory()) continue;
     for (const file of fs.readdirSync(dirPath).filter(f => f.endsWith('.js'))) {
-        const Cmd = require(`${dirPath}/${file}`);
+        const Cmd = require(path.join(dirPath, file));
         const cmd = new Cmd();
         if (cmd.name) client.commands.set(cmd.name, cmd);
     }
 }
 
-client.once('ready', () => {
+client.once(Events.ClientReady, () => {
     console.log('Bot ready.');
     client.user.setActivity('^help');
 });
