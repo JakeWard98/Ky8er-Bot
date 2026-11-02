@@ -8,6 +8,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Security
+- **2026-11-02 security audit — no new advisories. Lockfile refreshed
+  within the existing semver ranges.**
+  Scheduled weekly audit. GitHub's Dependabot / code-scanning alert APIs
+  were not reachable from the audit environment (HTTP 403), so the check
+  was manual: `npm audit` (0 vulnerabilities before and after), a review
+  of every upstream release since the 2026-10-28 audit, and an
+  independent code review.
+  - **Dependency hygiene (`npm update`; `package.json` unchanged):**
+    - `discord.js` 14.27.0 → 14.28.0, with `@discordjs/builders` 1.14.1 →
+      1.15.0 and `discord-api-types` 0.38.53 → 0.38.57;
+    - `ws` 8.21.3 → 8.22.1;
+    - `miniget` 4.2.3 → 4.2.5, `m3u8stream` 0.8.6 → 0.8.7 and `tslib`
+      2.8.1 → 2.9.1;
+    - type-only and WASM-runtime packages (`@types/node`, `@types/ws`,
+      `undici-types`, `@napi-rs/wasm-runtime`, `@tybys/wasm-util`).
+    None of these releases is a security fix. The `undici` overrides
+    still resolve to the patched `6.29.1` / `7.30.1`. All 65 lockfile
+    entries resolve from `registry.npmjs.org` with integrity hashes, and
+    none has an install script.
+  - **Reviewed, not taken:** `@distube/ytdl-core` 5.x (22–30 Oct) is a
+    rewrite that removes the 4.x JavaScript implementation, changes the
+    API and has no advisory. `dotenv` 17/18 are majors with no advisory.
+    Both stay on their current majors. There has been no Node.js security
+    release since 2026-10-21, so the `engines` floor is unchanged.
+    `actions/checkout` stays on v6.1.0, which carries the v7
+    `pull_request_target` safety backport (CodeQL does not use that
+    trigger). `github/codeql-action` v4.39.1 is still the latest tag.
+  Validated on Node `22.23.4`: `npm ci` from the new lockfile, all 15
+  command modules load, `main.js` boots to the (stubbed) login step, and
+  `npm audit` reports 0 vulnerabilities.
+
 - **2026-10-28 audit — bot code fixes from the manual security review (1
   High, 1 Moderate, 6 Low) and CI action updates.**
   Each finding was reproduced against the real `main.js`: Discord login
