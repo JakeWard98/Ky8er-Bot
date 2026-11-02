@@ -3,12 +3,17 @@ const {
     getVoiceConnection,
     createAudioPlayer,
     createAudioResource,
+    entersState,
     AudioPlayerStatus,
     VoiceConnectionStatus,
 } = require('@discordjs/voice');
+const { PermissionFlagsBits } = require('discord.js');
 const ytdl = require('@distube/ytdl-core');
 
 const MAX_QUEUE = 50;
+// Give up on a voice connection that never becomes Ready, or the player
+// would sit AutoPaused holding its ffmpeg process forever.
+const READY_TIMEOUT_MS = 20_000;
 
 class Play {
     constructor() {
@@ -28,16 +33,29 @@ class Play {
             return message.reply('You must be in a Voice Channel!');
         }
 
-        if (!servers[message.guild.id]) {
-            servers[message.guild.id] = { queue: [], player: null };
+        const guildId = message.guildId;
+        let connection = getVoiceConnection(guildId);
+        // Only members in the bot's channel (or mods with Move Members) may
+        // queue audio into it, matching the ^dc check.
+        if (connection && connection.joinConfig.channelId !== voiceChannel.id
+            && !message.member.permissions.has(PermissionFlagsBits.MoveMembers)) {
+            return message.reply('You must be in my Voice Channel to queue music.');
         }
-        const server = servers[message.guild.id];
+        // The bot must not speak for a member who may not speak themselves.
+        if (message.member.voice.serverMute
+            || !voiceChannel.permissionsFor(message.member)?.has(PermissionFlagsBits.Speak)) {
+            return message.reply('You need permission to speak in your Voice Channel.');
+        }
+
+        if (!servers[guildId]) {
+            servers[guildId] = { queue: [], player: null };
+        }
+        const server = servers[guildId];
         if (server.queue.length >= MAX_QUEUE) {
             return message.reply(`The queue is full (max ${MAX_QUEUE}).`);
         }
         server.queue.push(`https://www.youtube.com/watch?v=${ytdl.getURLVideoID(url)}`);
 
-        let connection = getVoiceConnection(message.guild.id);
         if (connection && server.player) {
             message.reply('Added to queue!');
             return;
@@ -47,34 +65,60 @@ class Play {
             try {
                 connection = joinVoiceChannel({
                     channelId: voiceChannel.id,
-                    guildId: message.guild.id,
+                    guildId,
                     adapterCreator: voiceChannel.guild.voiceAdapterCreator,
                 });
             } catch (err) {
                 console.error('Voice join error:', err.message);
-                delete servers[message.guild.id];
+                delete servers[guildId];
                 return message.reply('Could not join the Voice Channel.');
             }
             connection.on('error', (err) => console.error('Voice connection error:', err.message));
         }
 
-        connection.once(VoiceConnectionStatus.Disconnected, () => {
-            const state = servers[message.guild.id];
-            delete servers[message.guild.id];
+        // Tear down on Disconnected and also on Destroyed: removing the bot
+        // from the guild destroys the connection without a Disconnected step,
+        // which used to leave the player and its ffmpeg process running.
+        // Uses the captured guildId: message.guild is null once the guild is gone.
+        let cleanedUp = false;
+        const cleanup = () => {
+            if (cleanedUp) return;
+            cleanedUp = true;
+            const state = servers[guildId];
+            delete servers[guildId];
             if (connection.state.status !== VoiceConnectionStatus.Destroyed) connection.destroy();
             state?.player?.stop(true);
+        };
+        connection.once(VoiceConnectionStatus.Disconnected, cleanup);
+        connection.once(VoiceConnectionStatus.Destroyed, cleanup);
+        entersState(connection, VoiceConnectionStatus.Ready, READY_TIMEOUT_MS).catch(() => {
+            console.error('Voice connection did not become ready; leaving.');
+            cleanup();
         });
 
         playNext(connection, message, servers);
     }
 }
 
+// Tell the channel the command came from, if it still exists. Message#channel
+// is a cache lookup that returns null once the channel (or thread, or guild)
+// is gone, and a throw here would escape from a stream event listener and
+// exit the process.
+function notify(message, text) {
+    try {
+        message.channel?.send(text).catch(() => {});
+    } catch {
+        // Nowhere left to report to.
+    }
+}
+
 function playNext(connection, message, servers) {
     if (connection.state.status === VoiceConnectionStatus.Destroyed) return;
-    const server = servers[message.guild.id];
+    const guildId = message.guildId;
+    const server = servers[guildId];
     if (!server || !server.queue.length) {
         connection.destroy();
-        delete servers[message.guild.id];
+        delete servers[guildId];
         return;
     }
 
@@ -96,8 +140,9 @@ function playNext(connection, message, servers) {
         stream = ytdl(url, { filter: 'audioonly', quality: 'lowestaudio' });
         stream.on('error', (err) => {
             console.error('Stream error:', err.message);
-            message.channel.send('Stream error. Skipping.').catch(() => {});
+            // Advance first, so the queue moves on even if reporting fails.
             next();
+            notify(message, 'Stream error. Skipping.');
         });
         player = createAudioPlayer();
         server.player = player;
@@ -110,8 +155,8 @@ function playNext(connection, message, servers) {
         connection.subscribe(player);
     } catch (err) {
         console.error('Playback error:', err.message);
-        message.channel.send('Could not stream that URL. Skipping.').catch(() => {});
         next();
+        notify(message, 'Could not stream that URL. Skipping.');
     }
 }
 

@@ -43,15 +43,22 @@ untrusted operators.
   error message (not the full stack with potentially sensitive data).
   These do **not** catch exceptions thrown inside event listeners, so the
   voice code guards its own listeners: a failing track advances the queue
-  exactly once, a destroyed connection is never destroyed again, and voice
-  connections have an `'error'` listener.
+  exactly once, a destroyed connection is never destroyed again, voice
+  connections and the client have `'error'` listeners, and status messages
+  go out only if the original channel still exists (it may have been
+  deleted, swept from the cache or left with the guild).
 - **Mass pings through the bot.** The client sets
   `allowedMentions: { parse: [] }`, so echoed text (such as a guild name
   containing `@everyone`) never pings anyone.
 - **Queue abuse.** `^play` accepts only YouTube video URLs (validated by
   `ytdl-core`), stores just the video ID, and caps each guild's queue at 50.
-  `^dc` requires the caller to be in the bot's voice channel or to have
-  Move Members.
+  `^play` (once the bot is connected) and `^dc` require the caller to be in
+  the bot's voice channel or to have Move Members, and `^play` refuses
+  callers who are server-muted or lack Speak in their channel.
+- **Leaked ffmpeg processes.** Playback is torn down whenever the voice
+  connection is disconnected or destroyed (including when the bot is
+  removed from a guild) and when a connection fails to become ready within
+  20 seconds.
 - **Bot replying to its own messages.** The `messageCreate` handler bails
   out on `message.author.bot`.
 - **Installing on an unpatched Node.js runtime.** `engines` in
