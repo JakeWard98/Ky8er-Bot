@@ -8,13 +8,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Security
-- **2026-11-02 security audit — no new advisories. Lockfile refreshed
-  within the existing semver ranges.**
+- **2026-11-02 security audit — bot code fixes from the manual review (1
+  Moderate, 2 Low). No new dependency advisories; lockfile refreshed within
+  the existing semver ranges.**
   Scheduled weekly audit. GitHub's Dependabot / code-scanning alert APIs
   were not reachable from the audit environment (HTTP 403), so the check
   was manual: `npm audit` (0 vulnerabilities before and after), a review
   of every upstream release since the 2026-10-28 audit, and an
   independent code review.
+  - **Moderate: a `^play` session crashed the bot once its channel was
+    gone.** The stream `'error'` listener replied through the starting
+    message's `message.channel`. That is a cache lookup, and it returns
+    `null` once the channel leaves the cache. Causes include a mod deleting
+    the channel, a temp-channel bot, the bot being kicked, or a thread
+    auto-archiving and being dropped by discord.js's default 4-hour thread
+    sweeper (no permissions needed). The next download failure, such as a
+    YouTube 403 or a network error, then threw a `TypeError` inside the
+    listener and exited the process, taking the bot down in every guild.
+    If the failure was a `getInfo` error instead, the throw became a logged
+    rejection, but the queue stuck with ffmpeg alive until `^dc`.
+    `playNext()` now advances the queue *before* reporting. Reports go
+    through a guarded `notify()` that skips a missing channel. The guild is
+    tracked by `message.guildId`, because `message.guild` is null after a
+    kick. A client `'error'` listener is also added.
+  - **Low: removing the bot from a guild leaked an ffmpeg process.**
+    discord.js destroys the voice connection without passing through
+    `Disconnected`, so cleanup never ran, and `guildDelete` did not stop the
+    player. That left an AutoPaused ffmpeg process and its download running
+    indefinitely. Playback is now torn down on `Destroyed` as well as
+    `Disconnected`, and `guildDelete` stops the player. A connection that
+    never becomes ready (for example when the bot cannot connect) is
+    abandoned after 20 seconds instead of holding ffmpeg forever.
+  - **Low: `^play` had no channel or permission check.** A member in any
+    voice channel could start or queue audio into the channel the bot
+    occupied, and a server-muted member, or one without Speak, could make
+    the bot speak for them. Once connected, `^play` now requires the
+    caller to be in the bot's channel or to have Move Members, matching
+    `^dc`. It also refuses callers who are server-muted or lack Speak.
+  - **Info, not changed:** the mod commands and `^dc`'s Move Members
+    fallback check guild-wide permissions rather than channel overwrites.
+    The mod commands are harmless, so this has no practical impact.
+  Verified with the reviewer's harness: the real `main.js` with the
+  Discord login stubbed, plus real discord.js actions, `@discordjs/voice`,
+  ffmpeg and `ytdl()`. On the old code, the deleted-channel run exits with
+  code 1 (`TypeError: Cannot read properties of null (reading 'send')`). On
+  the fixed code:
+    - the deleted-channel, swept-thread and `getInfo`-failure runs stay
+      up, the queue moves on, and 0 ffmpeg processes remain;
+    - a guild kick leaves 0 ffmpeg (was 1);
+    - a never-ready connection is dropped at 20 s with 0 ffmpeg;
+    - cross-channel, server-muted and no-Speak `^play` are refused, while
+      a Move Members mod can still queue;
+    - normal playback, `^join` + `^play` and `^dc` behave as before.
   - **Dependency hygiene (`npm update`; `package.json` unchanged):**
     - `discord.js` 14.27.0 → 14.28.0, with `@discordjs/builders` 1.14.1 →
       1.15.0 and `discord-api-types` 0.38.53 → 0.38.57;

@@ -68,7 +68,7 @@ Mod commands require the **Manage Messages** permission.
 |----------------------|------------------------------------------------------|
 | `^join`              | Bot joins the caller's voice channel                 |
 | `^dc`                | Bot leaves (caller must be in the bot's channel, or have Move Members) |
-| `^play <url>`        | Play a YouTube video URL, or add it to the queue (max 50) |
+| `^play <url>`        | Play a YouTube video URL, or add it to the queue (max 50). Caller needs Speak, and must be in the bot's channel once it is connected (or have Move Members) |
 | `^queue`, `^skip`, `^pause`, `^np` | Not implemented yet (reply with a placeholder) |
 
 ## Dependencies

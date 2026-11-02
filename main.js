@@ -50,7 +50,15 @@ client.on('messageCreate', async (message) => {
 });
 
 client.on('guildDelete', (guild) => {
+    const state = servers[guild.id];
     delete servers[guild.id];
+    // Stop playback too, or its ffmpeg process and download keep running.
+    state?.player?.stop(true);
+});
+
+// Without a listener, an 'error' event from the client would throw and exit.
+client.on('error', (err) => {
+    console.error('Client error:', err.message);
 });
 
 process.on('unhandledRejection', (err) => {
