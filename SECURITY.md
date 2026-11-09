@@ -53,12 +53,18 @@ untrusted operators.
 - **Queue abuse.** `^play` accepts only YouTube video URLs (validated by
   `ytdl-core`), stores just the video ID, and caps each guild's queue at 50.
   `^play` (once the bot is connected) and `^dc` require the caller to be in
-  the bot's voice channel or to have Move Members, and `^play` refuses
-  callers who are server-muted or lack Speak in their channel.
-- **Leaked ffmpeg processes.** Playback is torn down whenever the voice
-  connection is disconnected or destroyed (including when the bot is
-  removed from a guild) and when a connection fails to become ready within
-  20 seconds.
+  the bot's voice channel or to have Move Members. `^play` refuses
+  callers who are server-muted, suppressed (stage audience) or lack Speak
+  in their channel.
+- **Leaked processes and file descriptors.** No child process is spawned:
+  `^play` requests YouTube's WebM/Opus audio and demuxes it in-process, so
+  there is no ffmpeg to leak or fail to spawn. (Until 2026-11-09, every
+  skipped track leaked two ffmpeg pipes, and once spawning failed the bot
+  crashed.) Playback is torn down whenever the voice connection is
+  disconnected or destroyed (including when the bot is removed from a
+  guild). A connection from `^play` or `^join` that is not ready within
+  20 seconds (for example, a full channel or Connect denied) is
+  abandoned, so it cannot hold the guild's voice slot.
 - **Bot replying to its own messages.** The `messageCreate` handler bails
   out on `message.author.bot`.
 - **Installing on an unpatched Node.js runtime.** `engines` in
@@ -92,6 +98,10 @@ untrusted operators.
   never receive that fix. `package.json` `engines` plus `engine-strict` in
   `.npmrc` make `npm install` refuse older runtimes, and `setup.sh`
   enforces the same floor.
+- The Node.js project has pre-announced security releases for the 22, 24
+  and 26 lines on or shortly after **2026-11-11** (highest severity:
+  High). Upgrade as soon as they ship. The next audit raises the
+  `engines` floor to match.
 - Re-run `./setup.sh` periodically — it runs `npm install` and
   `npm audit` so you'll see new advisories as they're published.
 - Don't commit `.env`, `config.json`, or `settings.sqlite3` (already in

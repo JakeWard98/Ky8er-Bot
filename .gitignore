@@ -51,12 +51,9 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 *.launch
 .settings/
 *.sublime-workspace
-.vscode
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+# Whole folder ignored. (The old `!.vscode/settings.json`-style re-includes
+# never applied: git cannot re-include a file whose parent dir is ignored.)
+.vscode/
 
 # OS
 .DS_Store

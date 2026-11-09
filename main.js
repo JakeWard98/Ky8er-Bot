@@ -52,7 +52,7 @@ client.on('messageCreate', async (message) => {
 client.on('guildDelete', (guild) => {
     const state = servers[guild.id];
     delete servers[guild.id];
-    // Stop playback too, or its ffmpeg process and download keep running.
+    // Stop playback too, or its download keeps running.
     state?.player?.stop(true);
 });
 
