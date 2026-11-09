@@ -8,6 +8,106 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Security
+- **2026-11-09 security audit — `undici` override raised to `^7.30.2` (6
+  advisories, highest High / CVSS 7.4), bot code fixes from the manual
+  review (1 Moderate, 1 Low, 2 Info), and dependency cleanup.**
+  Scheduled weekly audit. GitHub's Dependabot alert API is not exposed to
+  the audit environment, so the check was manual. It covered `npm audit`
+  (0 vulnerabilities before and after), every upstream release since the
+  2026-11-02 audit, the undici / ws / discord.js release notes and
+  advisories, and an independent code review.
+  - **undici `7.30.1` → `7.30.2`** (the `@distube/ytdl-core` override,
+    also used by `http-cookie-agent`). undici 7.30.2 (2026-11-05) fixes six
+    advisories that were not yet in the npm audit feed:
+    - GHSA-mqg3-3v4r-cm32 / CVE-2026-116592 — redirect chains cached under
+      the original key, enabling cache poisoning (High, CVSS 7.4)
+    - GHSA-9v6h-8rgp-m69f / CVE-2026-120415 — credentials kept on
+      cross-origin redirects when headers are tuple arrays (Moderate, 5.9)
+    - GHSA-3g9m-rv3r-w5w2 / CVE-2026-120222 — handler throw during cache
+      replay crashes the process (Moderate, 5.9)
+    - GHSA-7xg3-fphp-28hg / CVE-2026-120474, GHSA-5rm8-gv32-r954 /
+      CVE-2026-116630 — cache and redirect interaction issues (Moderate)
+    - GHSA-r4pc-4jcp-7pqc / CVE-2026-120423 — `fetch` Subresource
+      Integrity skipped for some whitespace (Moderate)
+
+    **None is reachable:** ytdl-core uses `undici.request()` with a cookie
+    interceptor only, and never the `cache()`, `redirect()` or
+    `deduplicate()` interceptors or `fetch` integrity. The 6.x line used by
+    discord.js is not listed as affected, and `6.29.1` is still the latest
+    6.x.
+  - **Moderate: every aborted track leaked two file descriptors, and
+    running out crashed the bot.** `createAudioResource(stream)` piped each
+    track through an ffmpeg child process (prism-media `FFmpeg`). Its
+    teardown SIGKILLs ffmpeg but never closes the child's stdin/stdout
+    pipes, so each skip-on-error, `^dc` or guild kick leaked two sockets for
+    good. The child also had no `'error'` listener. Once `spawn` failed
+    (EMFILE at the fd limit, ENOENT if ffmpeg was removed or upgraded
+    after first use, EAGAIN at a pids limit), the next track crashed the
+    process in every guild. Reproduced: under `prlimit --nofile=64` the
+    old code exited with `Error: spawn ffmpeg EMFILE`. **Fix:** `^play`
+    now requests YouTube's WebM/Opus audio-only format and passes it to
+    `@discordjs/voice` as `StreamType.WebmOpus`. The Opus frames are
+    demuxed in-process and sent as-is, with no transcoding and no child
+    process. This also stops ffmpeg from parsing untrusted media, and
+    **FFmpeg is no longer a requirement**. Videos with no Opus audio track
+    (rare) are skipped with "Stream error. Skipping.".
+  - **Low: one `^join` could lock music for the whole guild.** A `^join`
+    into a channel the bot cannot enter (full, or Connect denied) left the
+    connection signalling forever. Every repeat `^join` added another
+    listener and replied "Successfully Joined!". Every non-mod `^play` was
+    then refused ("You must be in my Voice Channel"), because the stuck
+    connection pointed at the unjoinable channel. `^join` now refuses
+    while a connection already exists and replies only once it is ready.
+    A connection not ready within 20 seconds is destroyed and reported as
+    "Could not join the Voice Channel.".
+  - **Info:** `^play` now also refuses a suppressed stage-audience member.
+    That only matters if the bot is made a stage speaker. A late download
+    error after a track has already moved on (for example after `^dc`) no
+    longer posts a stray "Stream error. Skipping.".
+  - **Info, not changed:**
+    - When the bot's voice state is still null, any member can `^dc`.
+      Harmless, and with the `^join` fix it no longer matters.
+    - The CodeQL job keeps `actions: read` / `packages: read`; these are
+      only needed for private repos, and are harmless.
+  - **Dependency cleanup:**
+    - **Removed the unused root `opusscript` 0.1.1.** The bot never
+      required it. `@discordjs/voice` ships its own nested `opusscript`
+      0.0.8 (prism-media's peer range is `^0.0.8`), and the new WebM/Opus
+      path does no Opus encoding at all. The lockfile goes from 65 to 64
+      entries.
+    - `npm update` within the existing ranges: `discord.js` 14.28.0 →
+      14.28.1, `ws` 8.22.1 → 8.22.2, `miniget` 4.2.5 → 4.2.6,
+      `discord-api-types` 0.38.57 → 0.38.58 and `@napi-rs/wasm-runtime`
+      1.2.6 → 1.2.7. None is a security release.
+    - `.gitignore`: dropped the `!.vscode/...` re-include lines. They never
+      applied, because git cannot re-include a file inside an ignored
+      directory. The whole `.vscode/` folder stays ignored.
+  - **Reviewed, not taken:**
+    - `@distube/ytdl-core` 5.x, `dotenv` 17/18 and `tough-cookie` 6 are
+      majors with no advisory.
+    - `@snazzah/davey` 0.2.0 is outside `@discordjs/voice`'s range.
+    - **Node.js:** a security release for 22, 24 and 26 (highest severity
+      High) is pre-announced for on or after 2026-11-11. It has not
+      shipped, so the `engines` floor is unchanged for now. SECURITY.md
+      tells operators to upgrade when it lands.
+  Verified with the reviewer's harness: the real `main.js`, discord.js
+  actions and `@discordjs/voice`, with Discord login stubbed and a ytdl
+  stub serving real WebM/Opus files. 42 checks, all passing:
+    - normal playback through the `webm/opus demuxer` edge only, with audio
+      packets sent and the queue draining;
+    - 0 sockets and 0 fds leaked across 10 failed tracks, 5 `^dc`s and a
+      guild kick;
+    - ffmpeg never spawned, and playback works with no ffmpeg on `PATH`;
+    - 60 failed tracks at `nofile=64` survived (the old code crashed);
+    - real ytdl (YouTube unreachable, so every track fails) leaks no
+      sockets and reports every failure;
+    - the `^join` jam is gone, and normal `^join` → `^play` still works;
+    - the stage, muted, no-Speak and cross-channel `^play` checks;
+    - no stray late error message.
+  `npm ci` from the new lockfile works. All 64 entries come from
+  `registry.npmjs.org` with integrity hashes and no install scripts.
+  `main.js` boots to the (stubbed) login step on Node `22.23.4`.
+
 - **2026-11-02 security audit — bot code fixes from the manual review (1
   Moderate, 2 Low). No new dependency advisories; lockfile refreshed within
   the existing semver ranges.**

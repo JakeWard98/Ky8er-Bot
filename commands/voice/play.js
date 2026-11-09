@@ -5,6 +5,7 @@ const {
     createAudioResource,
     entersState,
     AudioPlayerStatus,
+    StreamType,
     VoiceConnectionStatus,
 } = require('@discordjs/voice');
 const { PermissionFlagsBits } = require('discord.js');
@@ -12,8 +13,18 @@ const ytdl = require('@distube/ytdl-core');
 
 const MAX_QUEUE = 50;
 // Give up on a voice connection that never becomes Ready, or the player
-// would sit AutoPaused holding its ffmpeg process forever.
+// would sit AutoPaused holding its download stream forever.
 const READY_TIMEOUT_MS = 20_000;
+// Ask YouTube for its WebM/Opus audio-only format and hand the Opus frames
+// straight to Discord (demuxed in-process; nothing is transcoded). The
+// previous path piped every track through an ffmpeg child process, which
+// leaked two file descriptors on each skip/^dc/kick and, once spawn failed
+// (EMFILE, or ffmpeg removed), crashed the bot on an unhandled 'error'.
+const YTDL_OPTIONS = {
+    filter: (format) => format.hasAudio && !format.hasVideo
+        && format.container === 'webm' && format.codecs === 'opus',
+    quality: 'lowestaudio',
+};
 
 class Play {
     constructor() {
@@ -42,7 +53,8 @@ class Play {
             return message.reply('You must be in my Voice Channel to queue music.');
         }
         // The bot must not speak for a member who may not speak themselves.
-        if (message.member.voice.serverMute
+        // `suppress` covers a stage-channel audience member.
+        if (message.member.voice.serverMute || message.member.voice.suppress
             || !voiceChannel.permissionsFor(message.member)?.has(PermissionFlagsBits.Speak)) {
             return message.reply('You need permission to speak in your Voice Channel.');
         }
@@ -137,8 +149,11 @@ function playNext(connection, message, servers) {
     };
 
     try {
-        stream = ytdl(url, { filter: 'audioonly', quality: 'lowestaudio' });
+        stream = ytdl(url, YTDL_OPTIONS);
         stream.on('error', (err) => {
+            // Already moved on (track ended, failed elsewhere, or ^dc): a late
+            // download error is not news to the channel.
+            if (advanced) return;
             console.error('Stream error:', err.message);
             // Advance first, so the queue moves on even if reporting fails.
             next();
@@ -151,7 +166,7 @@ function playNext(connection, message, servers) {
             console.error('Player error:', err.message);
             next();
         });
-        player.play(createAudioResource(stream));
+        player.play(createAudioResource(stream, { inputType: StreamType.WebmOpus }));
         connection.subscribe(player);
     } catch (err) {
         console.error('Playback error:', err.message);

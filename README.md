@@ -10,8 +10,8 @@ practice code.
   ("Node2Shell", Brotli decoder RCE). Older releases and end-of-life lines
   (18.x, 20.x, 23.x, 25.x) are refused by `setup.sh` and by `npm install`
   (`engine-strict` in `.npmrc`).
-- **FFmpeg** on the `PATH` (needed to transcode YouTube audio for `^play`;
-  e.g. `apt install ffmpeg`)
+- FFmpeg is **not** needed: `^play` streams YouTube's WebM/Opus audio
+  straight to Discord without transcoding.
 - A Discord bot token (see
   [Discord Developer Portal](https://discord.com/developers/applications))
 - **Message Content Intent** enabled under *Bot > Privileged Gateway Intents*
@@ -68,7 +68,7 @@ Mod commands require the **Manage Messages** permission.
 |----------------------|------------------------------------------------------|
 | `^join`              | Bot joins the caller's voice channel                 |
 | `^dc`                | Bot leaves (caller must be in the bot's channel, or have Move Members) |
-| `^play <url>`        | Play a YouTube video URL, or add it to the queue (max 50). Caller needs Speak, and must be in the bot's channel once it is connected (or have Move Members) |
+| `^play <url>`        | Play a YouTube video URL, or add it to the queue (max 50). Caller needs Speak (not server-muted, not a stage audience member), and must be in the bot's channel once it is connected (or have Move Members). Videos without an Opus audio track are skipped |
 | `^queue`, `^skip`, `^pause`, `^np` | Not implemented yet (reply with a placeholder) |
 
 ## Dependencies
@@ -78,10 +78,9 @@ Direct runtime deps (kept minimal):
 - [`discord.js`](https://www.npmjs.com/package/discord.js)
 - [`@discordjs/voice`](https://www.npmjs.com/package/@discordjs/voice)
 - [`@distube/ytdl-core`](https://www.npmjs.com/package/@distube/ytdl-core)
-- [`opusscript`](https://www.npmjs.com/package/opusscript) (audio encoder)
 - [`dotenv`](https://www.npmjs.com/package/dotenv)
 
-Last manual CVE re-audit: **2026-10-28** — see [`CHANGELOG.md`](./CHANGELOG.md)
+Last manual CVE re-audit: **2026-11-09** — see [`CHANGELOG.md`](./CHANGELOG.md)
 for the audit notes. `npm audit` is also run automatically by `setup.sh`.
 
 ## Security
