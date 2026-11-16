@@ -12,6 +12,9 @@ const { PermissionFlagsBits } = require('discord.js');
 const ytdl = require('@distube/ytdl-core');
 
 const MAX_QUEUE = 50;
+// With YTDL_NO_DEBUG_FILE set (main.js), a failed parse puts the whole
+// YouTube page into err.message; log only the start of it.
+const brief = (err) => String(err?.message ?? err).slice(0, 300);
 // Give up on a voice connection that never becomes Ready, or the player
 // would sit AutoPaused holding its download stream forever.
 const READY_TIMEOUT_MS = 20_000;
@@ -149,12 +152,12 @@ function playNext(connection, message, servers) {
     };
 
     try {
-        stream = ytdl(url, YTDL_OPTIONS);
+        stream = ytdl(url, { ...YTDL_OPTIONS }); // ytdl-core mutates its options
         stream.on('error', (err) => {
             // Already moved on (track ended, failed elsewhere, or ^dc): a late
             // download error is not news to the channel.
             if (advanced) return;
-            console.error('Stream error:', err.message);
+            console.error('Stream error:', brief(err));
             // Advance first, so the queue moves on even if reporting fails.
             next();
             notify(message, 'Stream error. Skipping.');
@@ -163,13 +166,13 @@ function playNext(connection, message, servers) {
         server.player = player;
         player.on(AudioPlayerStatus.Idle, next);
         player.on('error', (err) => {
-            console.error('Player error:', err.message);
+            console.error('Player error:', brief(err));
             next();
         });
         player.play(createAudioResource(stream, { inputType: StreamType.WebmOpus }));
         connection.subscribe(player);
     } catch (err) {
-        console.error('Playback error:', err.message);
+        console.error('Playback error:', brief(err));
         next();
         notify(message, 'Could not stream that URL. Skipping.');
     }

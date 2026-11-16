@@ -59,6 +59,10 @@ if [ ! -f .env ]; then
     echo
 else
     echo ".env file found."
+    # .env holds the bot token: warn if group or others can access it.
+    if [ "$(ls -l .env | cut -c5-10)" != "------" ]; then
+        echo "WARNING: .env is accessible to other users. Restrict it with: chmod 600 .env"
+    fi
 fi
 
 # Verify no vulnerabilities

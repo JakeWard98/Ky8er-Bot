@@ -61,6 +61,9 @@ Thumbs.db
 
 # Bot-local data
 config.json
+# @distube/ytdl-core debug dumps of unparseable YouTube pages (main.js now
+# sets YTDL_NO_DEBUG_FILE, so only older checkouts write these)
+*-watch.html
 temp/
 settings.sqlite3
 obsolete_code.js

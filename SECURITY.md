@@ -64,7 +64,16 @@ untrusted operators.
   disconnected or destroyed (including when the bot is removed from a
   guild). A connection from `^play` or `^join` that is not ready within
   20 seconds (for example, a full channel or Connect denied) is
-  abandoned, so it cannot hold the guild's voice slot.
+  abandoned, so it cannot hold the guild's voice slot. A connection from
+  `^join` that a moderator disconnects (or whose channel is deleted) is
+  destroyed too, so a dead connection never blocks later `^join` /
+  `^play`.
+- **Disk and log flooding through `ytdl-core`.** `main.js` sets
+  `YTDL_NO_DEBUG_FILE` and `YTDL_NO_UPDATE` (unless already set), so a
+  YouTube page `ytdl-core` cannot parse is never written to the working
+  directory, and its background update check against GitHub is skipped.
+  Logged playback errors are truncated to 300 characters, because the
+  error then carries the whole page.
 - **Bot replying to its own messages.** The `messageCreate` handler bails
   out on `message.author.bot`.
 - **Installing on an unpatched Node.js runtime.** `engines` in
@@ -83,7 +92,7 @@ untrusted operators.
   user, they get mod-level commands.
 - **Arbitrary YouTube content from `^play`.** Any YouTube video a member
   links is played as-is (`ytdl-core` only contacts YouTube, by video ID, and
-  the media URLs YouTube returns). Don't run the bot on a host where loud
+  the media URLs YouTube returns; its GitHub update check is disabled). Don't run the bot on a host where loud
   audio is itself a problem.
 - **DoS via spammed commands.** No per-user rate limiting is
   implemented; rely on Discord's own rate limits.

@@ -38,6 +38,13 @@ class Join {
             return message.reply('Could not join the Voice Channel.');
         }
         connection.on('error', (err) => console.error('Voice connection error:', err.message));
+        // A moderator disconnect (or deleting the channel) leaves the
+        // connection Disconnected for good, and the guard above then refused
+        // every later ^join while ^play queued into the dead connection.
+        // Destroy it so the next ^join / ^play starts fresh, as ^play does.
+        connection.on(VoiceConnectionStatus.Disconnected, () => {
+            if (connection.state.status !== VoiceConnectionStatus.Destroyed) connection.destroy();
+        });
         // The reply comes up to 20 s later, by when the channel may be gone
         // (Message#channel is then null and reply() throws).
         const reply = (text) => {
