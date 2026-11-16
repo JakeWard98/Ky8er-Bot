@@ -1,5 +1,10 @@
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
+// @distube/ytdl-core: never dump YouTube pages it cannot parse into the
+// working directory (one file per attempt, 4 attempts per track, no limit)
+// and skip its background GitHub update check, so it only contacts YouTube.
+process.env.YTDL_NO_DEBUG_FILE ??= '1';
+process.env.YTDL_NO_UPDATE ??= '1';
 const { Client, GatewayIntentBits, Collection, Events } = require('discord.js');
 const fs = require('fs');
 
@@ -57,12 +62,14 @@ client.on('guildDelete', (guild) => {
 });
 
 // Without a listener, an 'error' event from the client would throw and exit.
+// `err?.message ?? err`: a rejection with an undefined reason must not
+// throw inside the handler (that exits the process).
 client.on('error', (err) => {
-    console.error('Client error:', err.message);
+    console.error('Client error:', err?.message ?? err);
 });
 
 process.on('unhandledRejection', (err) => {
-    console.error('Unhandled rejection:', err.message);
+    console.error('Unhandled rejection:', err?.message ?? err);
 });
 
 client.login(process.env.TOKEN);

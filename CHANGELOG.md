@@ -8,6 +8,69 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Security
+- **2026-11-16 security audit — bot code fixes from the independent code
+  review (2 Low, 3 Info) and a CodeQL action bump.**
+  The review found nothing Critical, High or Moderate. Both Low issues
+  were reproduced with a harness running the real `main.js`, discord.js
+  and `@discordjs/voice`, with only Discord's gateway and voice transport
+  and YouTube's HTTP layer stubbed.
+  - **Low: after a moderator disconnected the bot, `^join` refused for
+    good** (a regression from the 2026-11-09 `^join` fix). A moderator
+    Disconnect, or deleting the channel, leaves a `^join` connection
+    Disconnected but still tracked, and nothing destroyed it. Every later
+    `^join` replied "I am already in a Voice Channel!", and `^play` and
+    `^dc` from another channel were refused. A `^play` from the old
+    channel queued into the dead connection and silently dropped the
+    track 20 s later. Only `^dc` from outside voice cleared it. `^join`
+    now destroys its connection on Disconnected, as `^play` already does.
+    Verified: on current master, a second `^join` after the disconnect
+    gets "I am already in a Voice Channel!". With the fix, a new
+    connection reaches Ready and replies "Successfully Joined!", and
+    `^join` → `^play` → moderator disconnect destroys the stream once,
+    with no double destroy.
+  - **Low: `ytdl-core` dumped every unparseable YouTube page into the
+    working directory, with no limit.** On each failed parse,
+    `@distube/ytdl-core` writes `<timestamp>-watch.html` to `.`. It makes
+    4 attempts per track, so whenever YouTube serves a page it cannot
+    parse (a layout change or an interstitial), any member could fill the
+    host's disk through `^play`. Reproduced: 3 tracks wrote 12 files
+    (2.4 MB with 200 KB pages). `main.js` now sets `YTDL_NO_DEBUG_FILE=1`
+    and `YTDL_NO_UPDATE=1`, unless they are already set. The second also
+    stops ytdl-core's 12-hourly update check against `api.github.com`, so
+    the bot really does contact only YouTube, as SECURITY.md says. With
+    the debug file off, ytdl-core puts the whole page into `err.message`,
+    so logged playback errors are now cut to 300 characters. Verified:
+    the same run wrote 0 files and 1.9 KB of log, and made no GitHub
+    request. `*-watch.html` is also added to `.gitignore`, for older
+    checkouts.
+  - **Info:**
+    - The `unhandledRejection` and client `'error'` handlers read
+      `err.message`. A rejection with an `undefined` reason therefore
+      threw inside the handler and exited the process. Reproduced on
+      master with `Promise.reject(undefined)`: exit code 1. They now log
+      `err?.message ?? err`, and the process stays up. No reachable source
+      was found in the dependencies.
+    - `ytdl()` mutates the options object it is given (`requestOptions`,
+      `agent`, `playerClients`). `^play` now passes a copy instead of the
+      shared module-level object. That was harmless, because the values
+      are process-wide anyway.
+    - `setup.sh` now warns when an existing `.env` (which holds the bot
+      token) is accessible to group or others. Only a newly created
+      `.env` was made owner-only before.
+  - **`github/codeql-action` v4.39.1 → v4.39.3** (SHA-pinned). v4.39.2
+    moves the default CodeQL bundle to 2.27.4, and v4.39.3 fixes
+    diff-informed alert filtering. Neither has an advisory.
+  - **Reviewed, clean:** command dispatch (bot authors filtered, `Map`
+    lookup, guarded `execute`), the mod / Move Members / Speak / mute /
+    stage checks, every voice and stream listener, per-guild state
+    cleanup, timers and streams on every exit path, the URL handling
+    (only the 11-character video ID reaches ytdl), `allowedMentions`,
+    secret handling, `setup.sh`, the CodeQL workflow pins and the lockfile
+    sources.
+  - **Info, not changed:** no track-length cap (already accepted in
+    SECURITY.md). `setup.sh` keeps `npm install`, so a re-run picks up
+    in-range fixes.
+
 - **2026-11-16 security audit (expedited) — Node.js runtime floor raised
   to the 2026-11-11 security releases (CVE-2026-123864, CVSS 8.1), `ws`
   8.22.2 → 8.23.0 (GHSA-37g9-w4hg-h9qr, High, CVSS 7.5), and lockfile
