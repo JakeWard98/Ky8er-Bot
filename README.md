@@ -5,11 +5,12 @@ practice code.
 
 ## Requirements
 
-- Node.js **22.23.4+**, **24.22.1+** (LTS, recommended) or **26.12.1+** —
-  the 2026-10-21 Node.js security releases, which fix CVE-2026-111497
-  ("Node2Shell", Brotli decoder RCE). Older releases and end-of-life lines
-  (18.x, 20.x, 23.x, 25.x) are refused by `setup.sh` and by `npm install`
-  (`engine-strict` in `.npmrc`).
+- Node.js **22.23.5+**, **24.22.3+** (LTS, recommended) or **26.13.1+** —
+  the 2026-11-11 Node.js security releases (16 CVEs, including
+  CVE-2026-123864, a TLS use-after-free), which also carry the 2026-10-21
+  fix for CVE-2026-111497 ("Node2Shell", Brotli decoder RCE). Older
+  releases and end-of-life lines (18.x, 20.x, 23.x, 25.x) are refused by
+  `setup.sh` and by `npm install` (`engine-strict` in `.npmrc`).
 - FFmpeg is **not** needed: `^play` streams YouTube's WebM/Opus audio
   straight to Discord without transcoding.
 - A Discord bot token (see

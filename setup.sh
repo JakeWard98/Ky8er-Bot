@@ -8,18 +8,20 @@ echo "=== Ky8er-Bot Setup ==="
 echo
 
 # Check Node.js version.
-# Node2Shell (CVE-2026-111497) and the rest of the 2026-10-21 Node.js
-# security release are fixed only in 22.23.4 / 24.22.1 / 26.12.1; every
-# older release and every end-of-life line (18.x, 20.x, 23.x, 25.x) stays
-# vulnerable. Keep in sync with "engines" in package.json.
-REQUIRED_NODE="22.23.4+, 24.22.1+ or 26.12.1+"
+# The 2026-11-11 Node.js security release (16 CVEs, incl. CVE-2026-123864,
+# a TLSWrap use-after-free, CVSS 8.1) is fixed only in 22.23.5 / 24.22.3 /
+# 26.13.1, which also carry the 2026-10-21 fixes (Node2Shell,
+# CVE-2026-111497). Every older release and every end-of-life line (18.x,
+# 20.x, 23.x, 25.x) stays vulnerable. Keep in sync with "engines" in
+# package.json.
+REQUIRED_NODE="22.23.5+, 24.22.3+ or 26.13.1+"
 
 node_is_patched() {
     local major=$1 minor=$2 patch=$3 min_minor min_patch
     case "$major" in
-        22) min_minor=23; min_patch=4 ;;
-        24) min_minor=22; min_patch=1 ;;
-        26) min_minor=12; min_patch=1 ;;
+        22) min_minor=23; min_patch=5 ;;
+        24) min_minor=22; min_patch=3 ;;
+        26) min_minor=13; min_patch=1 ;;
         *)  [ "$major" -gt 26 ]; return ;;
     esac
     [ "$minor" -gt "$min_minor" ] || { [ "$minor" -eq "$min_minor" ] && [ "$patch" -ge "$min_patch" ]; }
@@ -33,7 +35,7 @@ fi
 IFS=. read -r NODE_MAJOR NODE_MINOR NODE_PATCH <<< "$NODE_VERSION"
 NODE_PATCH=${NODE_PATCH%%[!0-9]*}
 if ! node_is_patched "$NODE_MAJOR" "$NODE_MINOR" "${NODE_PATCH:-0}"; then
-    echo "ERROR: Node.js $REQUIRED_NODE is required (security fixes incl. CVE-2026-111497). You have $(node -v)."
+    echo "ERROR: Node.js $REQUIRED_NODE is required (security fixes incl. CVE-2026-123864 and CVE-2026-111497). You have $(node -v)."
     exit 1
 fi
 echo "Node.js $(node -v) detected."
