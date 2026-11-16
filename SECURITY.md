@@ -70,7 +70,7 @@ untrusted operators.
 - **Installing on an unpatched Node.js runtime.** `engines` in
   `package.json` (enforced by `engine-strict=true` in `.npmrc`) and the
   version gate in `setup.sh` refuse any runtime older than the
-  2026-10-21 security releases (`22.23.4` / `24.22.1` / `26.12.1`).
+  2026-11-11 security releases (`22.23.5` / `24.22.3` / `26.13.1`).
   `npm start` itself does not re-check the version.
 
 ### What Ky8er-Bot does **not** defend against
@@ -90,18 +90,16 @@ untrusted operators.
 
 ## Operational recommendations
 
-- Keep your Node.js runtime on a patched release: `22.23.4+`, `24.22.1+`
-  (LTS, recommended) or `26.12.1+`. These carry the 2026-10-21 Node.js
-  security release, including the fix for CVE-2026-111497 ("Node2Shell",
-  an out-of-bounds write in the Brotli decoder bundled into the runtime).
+- Keep your Node.js runtime on a patched release: `22.23.5+`, `24.22.3+`
+  (LTS, recommended) or `26.13.1+`. These carry the 2026-11-11 Node.js
+  security release (16 CVEs, 7 High, including CVE-2026-123864, a
+  use-after-free in `TLSWrap::DoWrite()` rated CVSS 8.1) and the
+  2026-10-21 one, including the fix for CVE-2026-111497 ("Node2Shell", an
+  out-of-bounds write in the Brotli decoder bundled into the runtime).
   Node.js 18.x / 20.x and the odd-numbered lines are end-of-life and will
-  never receive that fix. `package.json` `engines` plus `engine-strict` in
-  `.npmrc` make `npm install` refuse older runtimes, and `setup.sh`
+  never receive these fixes. `package.json` `engines` plus `engine-strict`
+  in `.npmrc` make `npm install` refuse older runtimes, and `setup.sh`
   enforces the same floor.
-- The Node.js project has pre-announced security releases for the 22, 24
-  and 26 lines on or shortly after **2026-11-11** (highest severity:
-  High). Upgrade as soon as they ship. The next audit raises the
-  `engines` floor to match.
 - Re-run `./setup.sh` periodically — it runs `npm install` and
   `npm audit` so you'll see new advisories as they're published.
 - Don't commit `.env`, `config.json`, or `settings.sqlite3` (already in

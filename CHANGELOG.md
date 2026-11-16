@@ -8,6 +8,69 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Security
+- **2026-11-16 security audit (expedited) — Node.js runtime floor raised
+  to the 2026-11-11 security releases (CVE-2026-123864, CVSS 8.1), `ws`
+  8.22.2 → 8.23.0 (GHSA-37g9-w4hg-h9qr, High, CVSS 7.5), and lockfile
+  cleanup.**
+  Scheduled weekly audit. GitHub's Dependabot alert API is not exposed to
+  the audit environment, so the check was manual: `npm audit` (0
+  vulnerabilities before and after), every npm release since the
+  2026-11-09 audit for all 64 locked packages, the upstream advisory
+  pages, and the Node.js security release notes. A code review runs
+  separately. This PR was split out and merged first because one CVE
+  scores above 7.5.
+  - **Node.js `engines` → `^22.23.5 || ^24.22.3 || >=26.13.1`** (was
+    `^22.23.4 || ^24.22.1 || >=26.12.1`). The release pre-announced last
+    week shipped on 2026-11-11 with 16 CVEs (7 High, 6 Medium, 3 Low).
+    The highest-rated is CVE-2026-123864 (CVSS 3.0 8.1): a re-entrant
+    `TLSWrap::DoWrite()` causes a use-after-free and copies heap memory
+    into HTTPS responses. Others include HTTP/2 use-after-free and leaks,
+    TLS 1.2 renegotiation carrying client-cert auth to another host, an
+    `https.Agent` TLS session reused across `ca` policies, and proxy
+    credentials leaked in `ERR_PROXY_INVALID_CONFIG` messages. The
+    release also updates the bundled llhttp and undici.
+    **Not reachable as far as we can tell:** the bot runs no HTTP(S) or
+    HTTP/2 server, sets no custom `ca`, uses no proxy, and does not use
+    the Permission Model. The floor is raised anyway, as with Node2Shell,
+    so `npm install` / `npm ci` (`engine-strict`) and `setup.sh` refuse
+    an unpatched runtime. **Upgrade note:** install Node.js 22.23.5+,
+    24.22.3+ or 26.13.1+ before running `npm ci`.
+  - **`ws` 8.22.2 → 8.23.0** (`@discordjs/ws` and `@discordjs/voice`,
+    both `^8.x`, so this is a lockfile refresh). GHSA-37g9-w4hg-h9qr
+    (High, CVSS 7.5, no CVE assigned, published 2026-11-12): a peer that
+    floods Ping frames while it stops reading makes `ws` queue one
+    automatic Pong per Ping until the process runs out of memory. It is
+    not yet in the npm audit feed. **Not reachable by third parties:**
+    the bot's only WebSocket peers are Discord's gateway and voice
+    servers, over TLS.
+  - **Lockfile cleanup** (`npm update` within existing ranges, 64 → 63
+    entries):
+    - `miniget` 4.2.6 → 4.2.8: bug fixes, no advisory.
+      GHSA-727f-g7jw-rmc3 (credential forwarding on redirect) was already
+      fixed in 4.2.6.
+    - `discord-api-types` 0.38.58 → 0.38.59.
+    - Dropped the stray nested `opusscript` 0.0.8 and hoisted
+      `prism-media` 1.3.5 to the top level. `opusscript` is only an
+      optional peer of `prism-media`, and nothing requires it. The
+      WebM/Opus path never encodes Opus. Verified: a WebM/Opus file played
+      through `createAudioResource(…, { inputType: StreamType.WebmOpus })`,
+      as `^play` does, yields 150 Opus packets through the `webm/opus
+      demuxer` edge only, with no Opus library installed.
+  - **Reviewed, not taken:**
+    - `@distube/ytdl-core` 5.x, `dotenv` 17/18, `tough-cookie` 6.1.0 (no
+      advisory), `undici` 8.x, `http-cookie-agent` 8 and
+      `https-proxy-agent` 9 are majors outside the declared ranges.
+    - The `@sapphire/*` majors released 2026-11-15 are outside
+      discord.js's ranges.
+    - `undici` 6.29.1 / 7.30.2 have had no release or advisory since the
+      last audit.
+  Validated on Node `22.23.5`: `npm ci` from the new lockfile (46
+  packages) and `npm audit` (0 vulnerabilities). On `22.23.4`, `npm ci`
+  is refused with `EBADENGINE`. The `setup.sh` gate passes 22.23.5,
+  24.22.3, 26.13.1 and later, and refuses 22.23.4, 24.22.2, 26.12.1,
+  26.13.0, 18.x, 20.x, 23.x and 25.x. `main.js` passes `node --check`,
+  and every command module loads.
+
 - **2026-11-09 security audit — `undici` override raised to `^7.30.2` (6
   advisories, highest High / CVSS 7.4), bot code fixes from the manual
   review (1 Moderate, 1 Low, 2 Info), and dependency cleanup.**
